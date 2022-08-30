@@ -907,3 +907,179 @@
 2022-08-30 16:31:21,280 [INFO] ApiDb:436 - User favorites Boards=[]
 2022-08-30 16:31:48,648 [INFO] Gpio:254 - dependency for GPIO [ETH, RCC, SYS, USART3, USB_OTG_FS]
 2022-08-30 16:31:56,570 [INFO] Gpio:254 - dependency for GPIO [ETH, RCC, SYS, USART3, USB_OTG_FS]
+2022-08-30 17:01:40,540 [INFO] Gpio:254 - dependency for GPIO [RCC, SYS, USART3]
+2022-08-30 17:02:36,720 [INFO] Gpio:254 - dependency for GPIO [RCC, SYS, USART3]
+2022-08-30 17:02:36,770 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:04:40,122 [INFO] Gpio:254 - dependency for GPIO [RCC, SYS, USART3]
+2022-08-30 17:04:40,158 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:05:09,862 [INFO] Gpio:254 - dependency for GPIO [RCC, SYS, USART3]
+2022-08-30 17:05:09,891 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:05:25,946 [INFO] Gpio:254 - dependency for GPIO [RCC, SYS, USART3]
+2022-08-30 17:05:25,979 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:05:59,904 [INFO] Gpio:254 - dependency for GPIO [RCC, SYS, USART3]
+2022-08-30 17:06:00,343 [INFO] Gpio:254 - dependency for GPIO [RCC, SYS, USART3]
+2022-08-30 17:06:11,702 [INFO] Gpio:254 - dependency for GPIO [RCC, SYS, USART3]
+2022-08-30 17:06:11,730 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:06:39,810 [INFO] Gpio:254 - dependency for GPIO [RCC, SYS, USART3]
+2022-08-30 17:06:39,848 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:07:02,100 [INFO] Gpio:254 - dependency for GPIO [RCC, SYS, USART3]
+2022-08-30 17:07:02,131 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:07:19,480 [INFO] Gpio:254 - dependency for GPIO [RCC, SYS, USART3]
+2022-08-30 17:07:19,526 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:07:21,791 [INFO] Gpio:254 - dependency for GPIO [RCC, SYS, USART3]
+2022-08-30 17:07:21,820 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:07:58,544 [INFO] Gpio:254 - dependency for GPIO [RCC, SYS, USART3]
+2022-08-30 17:07:58,573 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:08:01,064 [INFO] Gpio:254 - dependency for GPIO [RCC, SYS, USART3]
+2022-08-30 17:08:01,094 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:08:45,334 [INFO] Gpio:254 - dependency for GPIO [RCC, SYS, USART3]
+2022-08-30 17:08:45,365 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:09:15,950 [INFO] Gpio:254 - dependency for GPIO [RCC, SYS, USART3]
+2022-08-30 17:09:15,989 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:09:18,309 [INFO] Gpio:254 - dependency for GPIO [RCC, SYS, USART3]
+2022-08-30 17:09:18,342 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:09:48,049 [INFO] Gpio:254 - dependency for GPIO [RCC, SYS, USART3]
+2022-08-30 17:09:48,086 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:12:19,456 [INFO] Gpio:254 - dependency for GPIO [RCC, SYS, USART3]
+2022-08-30 17:12:19,494 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:12:22,342 [INFO] Gpio:254 - dependency for GPIO [RCC, SYS, USART3]
+2022-08-30 17:12:22,382 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:12:56,681 [INFO] Gpio:254 - dependency for GPIO [RCC, SYS, USART3]
+2022-08-30 17:12:56,714 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:12:59,482 [INFO] Gpio:254 - dependency for GPIO [RCC, SYS, USART3]
+2022-08-30 17:12:59,524 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:14:29,735 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:14:35,719 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:14:48,971 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:16:41,326 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:16:42,807 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:17:02,115 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:17:08,260 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:17:10,059 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:17:12,086 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:17:17,304 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:17:18,370 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:17:27,291 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:17:29,091 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:17:37,643 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:17:44,805 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:17:45,974 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:17:51,944 [INFO] UtilMem:74 - End SaveConfig() Used Memory: 750062184 Bytes (1073741824)
+2022-08-30 17:17:54,762 [INFO] UtilMem:74 - End SaveConfig() Used Memory: 887436224 Bytes (1073741824)
+2022-08-30 17:17:55,207 [INFO] BlockDiagram:2740 - set Specific Code input for plugin: TIM6_7F7
+2022-08-30 17:17:55,208 [INFO] BlockDiagram:2740 - set Specific Code input for plugin: TIM6_7F7
+2022-08-30 17:17:55,208 [INFO] BlockDiagram:2740 - set Specific Code input for plugin: TIM1_8F7
+2022-08-30 17:17:55,208 [INFO] BlockDiagram:2740 - set Specific Code input for plugin: TIM1_8F7
+2022-08-30 17:17:55,208 [INFO] BlockDiagram:2740 - set Specific Code input for plugin: TIM1_8F7
+2022-08-30 17:17:55,208 [INFO] BlockDiagram:2740 - set Specific Code input for plugin: SYS
+2022-08-30 17:17:55,208 [INFO] BlockDiagram:2740 - set Specific Code input for plugin: RCC
+2022-08-30 17:17:55,208 [INFO] BlockDiagram:2740 - set Specific Code input for plugin: NVIC
+2022-08-30 17:17:55,208 [INFO] BlockDiagram:2740 - set Specific Code input for plugin: USART
+2022-08-30 17:17:55,209 [INFO] BlockDiagram:2740 - set Specific Code input for plugin: GPIO
+2022-08-30 17:17:55,210 [INFO] CodeGenerator:681 - code generatio: config db path: C:\ST\STM32CubeIDE_1.8.0\STM32CubeIDE\plugins\com.st.stm32cube.common.mx_6.5.0.202202251913\\db\
+2022-08-30 17:17:55,819 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\MXTmpFiles\license.tmp_save
+2022-08-30 17:17:55,926 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\MXTmpFiles\license.tmp
+2022-08-30 17:17:55,975 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\gpio.c_save
+2022-08-30 17:17:56,070 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\gpio.c
+2022-08-30 17:17:56,079 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\gpio.h_save
+2022-08-30 17:17:56,168 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\gpio.h
+2022-08-30 17:17:56,530 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\MXTmpFiles\cortex.tmp_save
+2022-08-30 17:17:56,603 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\MXTmpFiles\cortex.tmp
+2022-08-30 17:17:56,617 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\tim.c_save
+2022-08-30 17:17:56,726 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\tim.c
+2022-08-30 17:17:56,740 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\tim.h_save
+2022-08-30 17:17:56,805 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\tim.h
+2022-08-30 17:17:56,815 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\usart.c_save
+2022-08-30 17:17:56,906 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\usart.c
+2022-08-30 17:17:56,909 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\usart.h_save
+2022-08-30 17:17:56,965 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\usart.h
+2022-08-30 17:17:56,983 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\stm32f7xx_it.c_save
+2022-08-30 17:17:57,081 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\stm32f7xx_it.c
+2022-08-30 17:17:57,089 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\stm32f7xx_it.h_save
+2022-08-30 17:17:57,148 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\stm32f7xx_it.h
+2022-08-30 17:17:57,164 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\stm32f7xx_hal_msp.c_save
+2022-08-30 17:17:57,244 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\stm32f7xx_hal_msp.c
+2022-08-30 17:17:57,248 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\MXTmpFiles\system.tmp_save
+2022-08-30 17:17:57,297 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\MXTmpFiles\system.tmp
+2022-08-30 17:17:57,308 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\stm32f7xx_hal_conf.h_save
+2022-08-30 17:17:57,386 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\stm32f7xx_hal_conf.h
+2022-08-30 17:17:57,415 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\main.h_save
+2022-08-30 17:17:57,494 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\main.h
+2022-08-30 17:17:57,503 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\main.c_save
+2022-08-30 17:17:57,586 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\main.c
+2022-08-30 17:17:58,476 [INFO] ProjectBuilder:2913 - Time for Copy HAL[1] : 366mS.
+2022-08-30 17:17:58,479 [INFO] ProjectBuilder:4015 - Project Generator version: 3.16.0
+2022-08-30 17:17:58,754 [INFO] ConfigFileManager:1287 - The Die is : DIE449
+2022-08-30 17:18:00,134 [INFO] ProjectBuilder:4183 - Time for Generating toolchain IDE Files: 1655mS.
+2022-08-30 17:18:00,135 [INFO] ProjectBuilder:2785 - Time for Copy CMSIS : 1mS.
+2022-08-30 17:18:00,137 [INFO] ProjectBuilder:2785 - Time for Copy CMSIS : 0mS.
+2022-08-30 17:18:32,258 [INFO] I2cTimingTraitement:325 - 0x00808CD2
+2022-08-30 17:18:35,975 [INFO] I2cTimingTraitement:325 - 0x00301739
+2022-08-30 17:18:36,039 [INFO] I2cTimingTraitement:325 - 0x00301739
+2022-08-30 17:19:16,091 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:19:24,014 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:19:42,325 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:19:46,196 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:19:58,373 [INFO] NvicIntPanel:96 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2022-08-30 17:20:00,454 [INFO] I2cTimingTraitement:325 - 0x00808CD2
+2022-08-30 17:20:04,863 [INFO] I2cTimingTraitement:325 - 0x00301739
+2022-08-30 17:20:04,919 [INFO] I2cTimingTraitement:325 - 0x00301739
+2022-08-30 17:20:08,144 [INFO] UtilMem:74 - End SaveConfig() Used Memory: 596793112 Bytes (1073741824)
+2022-08-30 17:20:10,081 [INFO] UtilMem:74 - End SaveConfig() Used Memory: 648705904 Bytes (1073741824)
+2022-08-30 17:20:10,355 [INFO] BlockDiagram:2740 - set Specific Code input for plugin: TIM6_7F7
+2022-08-30 17:20:10,355 [INFO] BlockDiagram:2740 - set Specific Code input for plugin: TIM6_7F7
+2022-08-30 17:20:10,355 [INFO] BlockDiagram:2740 - set Specific Code input for plugin: TIM1_8F7
+2022-08-30 17:20:10,355 [INFO] BlockDiagram:2740 - set Specific Code input for plugin: TIM1_8F7
+2022-08-30 17:20:10,355 [INFO] BlockDiagram:2740 - set Specific Code input for plugin: TIM1_8F7
+2022-08-30 17:20:10,355 [INFO] BlockDiagram:2740 - set Specific Code input for plugin: TIM1_8F7
+2022-08-30 17:20:10,355 [INFO] BlockDiagram:2740 - set Specific Code input for plugin: SYS
+2022-08-30 17:20:10,355 [INFO] BlockDiagram:2740 - set Specific Code input for plugin: RCC
+2022-08-30 17:20:10,356 [INFO] BlockDiagram:2740 - set Specific Code input for plugin: I2C
+2022-08-30 17:20:10,356 [INFO] BlockDiagram:2740 - set Specific Code input for plugin: I2C
+2022-08-30 17:20:10,356 [INFO] BlockDiagram:2740 - set Specific Code input for plugin: NVIC
+2022-08-30 17:20:10,356 [INFO] BlockDiagram:2740 - set Specific Code input for plugin: USART
+2022-08-30 17:20:10,357 [INFO] BlockDiagram:2740 - set Specific Code input for plugin: GPIO
+2022-08-30 17:20:10,357 [INFO] CodeGenerator:681 - code generatio: config db path: C:\ST\STM32CubeIDE_1.8.0\STM32CubeIDE\plugins\com.st.stm32cube.common.mx_6.5.0.202202251913\\db\
+2022-08-30 17:20:11,017 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\MXTmpFiles\license.tmp_save
+2022-08-30 17:20:11,080 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\MXTmpFiles\license.tmp
+2022-08-30 17:20:11,121 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\gpio.c_save
+2022-08-30 17:20:11,195 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\gpio.c
+2022-08-30 17:20:11,199 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\gpio.h_save
+2022-08-30 17:20:11,246 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\gpio.h
+2022-08-30 17:20:11,714 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\MXTmpFiles\cortex.tmp_save
+2022-08-30 17:20:11,795 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\MXTmpFiles\cortex.tmp
+2022-08-30 17:20:11,804 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\i2c.c_save
+2022-08-30 17:20:11,890 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\i2c.c
+2022-08-30 17:20:11,894 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\i2c.h_save
+2022-08-30 17:20:11,952 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\i2c.h
+2022-08-30 17:20:11,966 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\tim.c_save
+2022-08-30 17:20:12,090 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\tim.c
+2022-08-30 17:20:12,100 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\tim.h_save
+2022-08-30 17:20:12,164 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\tim.h
+2022-08-30 17:20:12,179 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\usart.c_save
+2022-08-30 17:20:12,250 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\usart.c
+2022-08-30 17:20:12,255 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\usart.h_save
+2022-08-30 17:20:12,305 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\usart.h
+2022-08-30 17:20:12,324 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\stm32f7xx_it.c_save
+2022-08-30 17:20:12,392 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\stm32f7xx_it.c
+2022-08-30 17:20:12,396 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\stm32f7xx_it.h_save
+2022-08-30 17:20:12,442 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\stm32f7xx_it.h
+2022-08-30 17:20:12,456 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\stm32f7xx_hal_msp.c_save
+2022-08-30 17:20:12,519 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\stm32f7xx_hal_msp.c
+2022-08-30 17:20:12,522 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\MXTmpFiles\system.tmp_save
+2022-08-30 17:20:12,565 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\MXTmpFiles\system.tmp
+2022-08-30 17:20:12,575 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\stm32f7xx_hal_conf.h_save
+2022-08-30 17:20:12,655 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\stm32f7xx_hal_conf.h
+2022-08-30 17:20:12,679 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\main.h_save
+2022-08-30 17:20:12,748 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Inc\main.h
+2022-08-30 17:20:12,756 [INFO] CodeEngine:237 - oldGeneratedFile, C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\main.c_save
+2022-08-30 17:20:12,843 [INFO] CodeEngine:261 - Generated code: C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-program\Core\Src\main.c
+2022-08-30 17:20:13,426 [INFO] ProjectBuilder:2913 - Time for Copy HAL[1] : 234mS.
+2022-08-30 17:20:13,430 [INFO] ProjectBuilder:4015 - Project Generator version: 3.16.0
+2022-08-30 17:20:13,644 [INFO] ConfigFileManager:1287 - The Die is : DIE449
+2022-08-30 17:20:14,610 [INFO] ProjectBuilder:4183 - Time for Generating toolchain IDE Files: 1180mS.
+2022-08-30 17:20:14,611 [INFO] ProjectBuilder:2785 - Time for Copy CMSIS : 0mS.
+2022-08-30 17:20:14,614 [INFO] ProjectBuilder:2785 - Time for Copy CMSIS : 0mS.
+2022-08-30 17:53:45,812 [ERROR] LogOutputStream:74 - [STDERR_REDIRECT] Warning: NLS missing message: ExternalToolsPreferencePage_External_tool_project_builders_migration_2 in: org.eclipse.ui.externaltools.internal.ui.ExternalToolsUIMessages
+2022-08-30 17:53:45,815 [ERROR] LogOutputStream:74 - [STDERR_REDIRECT] Warning: NLS missing message: ExternalToolsPreferencePage_Prompt_before_migrating_3 in: org.eclipse.ui.externaltools.internal.ui.ExternalToolsUIMessages
+2022-08-30 17:53:45,818 [ERROR] LogOutputStream:74 - [STDERR_REDIRECT] Warning: NLS missing message: ExternalToolsPreferencePage_1 in: org.eclipse.ui.externaltools.internal.ui.ExternalToolsUIMessages

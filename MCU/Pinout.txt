@@ -25,12 +25,12 @@ DIR - PE7 - DIR_NEEDLE
 2: PE13 - END_STOP_NEEDLE_2
 # Syringe sensor:
 I2C4
-	SDA - 
-	SCL - 
+	SDA - PF15
+	SCL - PF14
 # Needle sensor:
 I2C2
-	SDA - 
-	SCL - 
+	SDA - PF0
+	SCL - PF1
 # Fan:
 
 # USART:
