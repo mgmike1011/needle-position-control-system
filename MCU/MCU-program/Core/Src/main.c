@@ -30,11 +30,15 @@
 // Sensor
 #include "VL6180X.h"
 // Screen
-//#include
+#include "SSD1306_OLED.h"
+#include "GFX_BW.h"
+#include "fonts/fonts.h"
 // Temperature sensor
-//#include
+#include "BMPXX80.h"
 // Standard C library
 #include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -48,6 +52,11 @@
 #define BACK_NEEDLE 	LEFT_DIR
 #define SUCK_SYRINGE	RIGHT_DIR
 #define BLOW_SYRINGE	LEFT_DIR
+//
+// Control type
+//
+#define OPEN_LOOP 1
+#define CLOSE_LOOP 2
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -106,6 +115,10 @@ A4988_Drive Needle = {	.NAME = "NEEDLE",
 						.TIM_COUNTER_SLAVE = &htim5
 						};
 //
+// Control type
+//
+char Control_type = CLOSE_LOOP;
+//
 // Distance Sensors
 //
 VL6180X_ Syringe_sensor;
@@ -130,7 +143,13 @@ uint16_t length_Buffor_OLED;
 //
 // Soft timer
 //
-uint32_t SoftTimer = 0;
+uint32_t SoftTimer_OLED = 0;
+uint32_t SoftTimer_USART = 0;
+//
+// Temperature sensor
+//
+float Temperature = 0;
+int32_t Pressure = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -190,18 +209,56 @@ int main(void)
   VL6180X_Init(&Needle_sensor, &hi2c2);
   configureDefault_VL6180X(&Syringe_sensor);
   configureDefault_VL6180X(&Needle_sensor);
-  	  // Measure timer Start
-  HAL_TIM_Base_Start_IT(&htim6); // Needle - 5Hz
-  HAL_TIM_Base_Start_IT(&htim7); // Syringe - 5Hz
   	  // Initial measurement
   MESURE_Needle = readRangeSingleMillimeters_VL6180X(&Needle_sensor);
   MESURE_Syringe = readRangeSingleMillimeters_VL6180X(&Syringe_sensor);
+	  // Control initialization
+  if (Control_type == CLOSE_LOOP) {
+	  HAL_TIM_Base_Start_IT(&htim6); // Needle - 5Hz
+	  HAL_TIM_Base_Start_IT(&htim7); // Syringe - 5Hz
+	  HAL_TIM_Base_Stop_IT(Syringe.TIM_COUNTER_SLAVE); // Stop counting impulses for syringe
+	  HAL_TIM_Base_Stop_IT(Needle.TIM_COUNTER_SLAVE); // Stop counting impulses for needle
+  }else if (Control_type == OPEN_LOOP) {
+	  HAL_TIM_Base_Start_IT(&htim6); // Needle - 5Hz
+	  HAL_TIM_Base_Start_IT(&htim7); // Syringe - 5Hz
+  }
+  	  // Temperature sensor initialization
+  BMP280_Init(&hi2c2, BMP280_TEMPERATURE_16BIT, BMP280_STANDARD, BMP280_FORCEDMODE); // TODO Change i2c
+  BMP280_ReadTemperatureAndPressure(&Temperature, &Pressure);
+  	  // Communication start
+  HAL_UART_Receive_IT(&huart3, Buffor_Rx_USART, 8);
+  	  // Screen initialization
+  SSD1306_Init(&hi2c2); // TODO change i2c
+  GFX_SetFont(font_8x5);
+  GFX_SetFontSize(1);
+  SSD1306_Clear(BLACK);
+  SSD1306_Display();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  //
+	  // Screen - displaying the data
+	  //
+	  if ((HAL_GetTick() - SoftTimer_OLED) > 500) {
+		  SoftTimer_OLED = HAL_GetTick();
+		  SSD1306_Clear(BLACK);
+		  sprintf(Message_OLED, "Needle control");
+		  GFX_DrawString(0, 0, Message_OLED, WHITE, 0);
+		  // TODO implement screen
+		  SSD1306_Display();
+	  }
+	  //
+	  // Communication - sending the data
+	  //
+	  if ((HAL_GetTick() - SoftTimer_USART)) {
+		  SoftTimer_USART = HAL_GetTick();
+		  // TODO implement communication system
+		  length_Buffor_USART = sprintf((char*)Buffor_USART,"{\" \":%.1u}",MESURE_Needle);
+		  HAL_UART_Transmit(&huart3, Buffor_USART, length_Buffor_USART, 1000);
+	}
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -259,7 +316,113 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+//
+// TIM callback
+//
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+	//
+	// Motor driver callback - open loop control
+	//
+	if(htim == Syringe.TIM_COUNTER_SLAVE){	// Syringe
+		HAL_TIM_PWM_Stop(Syringe.TIM_STEP, Syringe.TIM_STEP_CHANNEL); // Stop syringe
+	}
+	else if(htim == Needle.TIM_COUNTER_SLAVE){ // Needle
+		HAL_TIM_PWM_Stop(Needle.TIM_STEP, Needle.TIM_STEP_CHANNEL); // Stop needle
+	}
+	//
+	// Motor driver callback - close loop control
+	//
+	else if (htim->Instance == TIM6) {
+		// Needle
+		MESURE_Needle = readRangeSingleMillimeters_VL6180X(&Needle_sensor); // Measurement
+		if (Needle.Current_Direction == FORWARD_NEEDLE) {
+			if(MESURE_Needle <= Set_distance_needle){ // TODO check if correct
+				HAL_TIM_PWM_Stop(Needle.TIM_STEP, Needle.TIM_STEP_CHANNEL); // Stop needle
+			}
+		} else {
+			if(MESURE_Needle >= Set_distance_needle){ // TODO check if correct
+				HAL_TIM_PWM_Stop(Needle.TIM_STEP, Needle.TIM_STEP_CHANNEL); // Stop needle
+			}
+		}
+	}
+	else if (htim->Instance == TIM7) {
+		// Syringe
+		MESURE_Syringe = readRangeSingleMillimeters_VL6180X(&Syringe_sensor); // Measurement
+		if (Syringe.Current_Direction == BLOW_SYRINGE) { // TODO check if correct
+			if (MESURE_Syringe <= Set_distance_syringe) {
+				HAL_TIM_PWM_Stop(Syringe.TIM_STEP, Syringe.TIM_STEP_CHANNEL); // Stop syringe
+			}
+		} else {
+			if (MESURE_Syringe >= Set_distance_syringe) { // TODO check if correct
+				HAL_TIM_PWM_Stop(Syringe.TIM_STEP, Syringe.TIM_STEP_CHANNEL); // Stop syringe
+			}
+		}
+	}
+}
+//
+// Safety interlock (limit switch)
+//
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
+	if(GPIO_Pin == END_STOP_SYRINGE_1_Pin){ // END STOP Syringe Near Drive
+		HAL_TIM_PWM_Stop(Syringe.TIM_STEP, Syringe.TIM_STEP_CHANNEL); // Stop syringe
+		Set_Direction_A4988(&Syringe, LEFT_DIR); // Set different direction
+		if (Control_type == CLOSE_LOOP) {
+			Set_distance_syringe = 100; // TODO change
+			HAL_TIM_PWM_Start(Syringe.TIM_STEP, Syringe.TIM_STEP_CHANNEL); // Stop needle
+		} else {
+			__HAL_TIM_SetCounter(Syringe.TIM_COUNTER_SLAVE, 0); // Reset Counter Syringe
+			Rotate_mm_A4988(&Syringe, 10); // Recoil
+		}
+	}else if(GPIO_Pin == END_STOP_SYRINGE_2_Pin){ // END STOP Syringe Near Syringe
+		HAL_TIM_PWM_Stop(Syringe.TIM_STEP, Syringe.TIM_STEP_CHANNEL); // Stop syringe
+		Set_Direction_A4988(&Syringe, RIGHT_DIR); // Set different direction
+		if (Control_type == CLOSE_LOOP) {
+			Set_distance_syringe = 10; // TODO change
+			HAL_TIM_PWM_Start(Syringe.TIM_STEP, Syringe.TIM_STEP_CHANNEL); // Stop needle
+		} else {
+			__HAL_TIM_SetCounter(Syringe.TIM_COUNTER_SLAVE, 0); // Reset Counter Syringe
+			Rotate_mm_A4988(&Syringe, 10); // Recoil
+		}
+	}else if(GPIO_Pin == END_STOP_NEEDLE_1_Pin){ // END STOP Needle Near Drive
+		HAL_TIM_PWM_Stop(Needle.TIM_STEP, Needle.TIM_STEP_CHANNEL); // Stop needle
+		Set_Direction_A4988(&Needle, RIGHT_DIR); // Set different direction
+		if (Control_type == CLOSE_LOOP) {
+			Set_distance_needle = 100; // TODO change
+			HAL_TIM_PWM_Start(Needle.TIM_STEP, Needle.TIM_STEP_CHANNEL); // Stop needle
+		} else {
+			__HAL_TIM_SetCounter(Needle.TIM_COUNTER_SLAVE, 0); // Reset Counter Needle
+			Rotate_mm_A4988(&Needle, 10); // Recoil
+		}
+	}else if(GPIO_Pin == END_STOP_NEEDLE_2_Pin){ // END STOP Needle Near Needle
+		HAL_TIM_PWM_Stop(Needle.TIM_STEP, Needle.TIM_STEP_CHANNEL); // Stop needle
+		Set_Direction_A4988(&Needle, LEFT_DIR); // Set different direction
+		if (Control_type == CLOSE_LOOP) {
+			Set_distance_needle = 10; // TODO change
+			HAL_TIM_PWM_Start(Needle.TIM_STEP, Needle.TIM_STEP_CHANNEL); // Stop needle
+		} else {
+			__HAL_TIM_SetCounter(Needle.TIM_COUNTER_SLAVE, 0); // Reset Counter Needle
+			Rotate_mm_A4988(&Needle, 10); // Recoil
+		}
+	}
+}
+//
+// Communication interface
+//
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
+	if(huart->Instance == USART3)
+	{
+		// Start of handling message
+		HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, GPIO_PIN_SET);
+		//
+		// Handling the message
+		//
+			// TODO implement
+		// End of handling message
+		HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, GPIO_PIN_RESET);
+		// Listening setup
+		HAL_UART_Receive_IT(&huart3, Buffor_Rx_USART, 8);
+	}
+}
 /* USER CODE END 4 */
 
 /**

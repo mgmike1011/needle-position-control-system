@@ -39,6 +39,7 @@ typedef struct{
 	// Direction PORT/PIN
 	GPIO_TypeDef	*PORT_DIR;
 	uint16_t		PIN_DIR;
+	char			Current_Direction;
 	// Resolution PORT/PIN
 	GPIO_TypeDef 	*PORT_MS1,
 				 	*PORT_MS2,

@@ -63,12 +63,15 @@ void Set_Direction_A4988(A4988_Drive* drive, int direction){
 	switch(direction){
 		case 1:
 			HAL_GPIO_WritePin(*&(drive->PORT_DIR), drive->PIN_DIR, GPIO_PIN_SET);
+			drive->Current_Direction = RIGHT_DIR;
 			break;
 		case 2:
 			HAL_GPIO_WritePin(*&(drive->PORT_DIR), drive->PIN_DIR, GPIO_PIN_RESET);
+			drive->Current_Direction = LEFT_DIR;
 			break;
 		default:
 			HAL_GPIO_WritePin(*&(drive->PORT_DIR), drive->PIN_DIR, GPIO_PIN_SET);
+			drive->Current_Direction = RIGHT_DIR;
 	}
 }
 void Enable_A4988(A4988_Drive* drive, int signal){
