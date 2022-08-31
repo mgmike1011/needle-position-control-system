@@ -34,7 +34,7 @@ I2C2
 # Fan:
 
 # USART:
-
+	USART 3
 # Screen:
 
 # Temperature sensor:

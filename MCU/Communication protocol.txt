@@ -1,0 +1,22 @@
+Communication system
+MCU -> PC
+{"NP":xxx,"SP":xxx,"NS":xxx,"SS":xxx,"TM":xx.x,"FN":x,"ST":x}
+NP - needle position in mm
+SP - syringe position in mm
+NS - needle set position in mm
+SS - syringe set position in mm
+TM - temperature in C
+FN - Is fan on : 1 - ON, 0 - OFF
+ST - status : 0 - IDLE, 1 - STOP, 2 - needle control, 3 - syringe control, 4 - needle and syringe control 
+
+PC -> MCU
+Schemat:	YXXX
+Y - litera/komunikat 
+XXX - wartosc
+Komunikaty:
+	N - needle set position
+	S - syringe set position
+	T - communication test
+	O - ON 
+	S - STOP
+	

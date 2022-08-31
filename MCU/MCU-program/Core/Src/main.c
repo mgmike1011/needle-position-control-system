@@ -133,7 +133,7 @@ volatile uint16_t Set_distance_syringe = 0;
 //
 // USART communication
 //
-uint8_t Buffor_USART[128], Buffor_Rx_USART[8];
+uint8_t Buffor_USART[128], Buffor_Rx_USART[4];
 uint16_t length_Buffor_USART;
 //
 // OLED screen print
@@ -226,7 +226,7 @@ int main(void)
   BMP280_Init(&hi2c2, BMP280_TEMPERATURE_16BIT, BMP280_STANDARD, BMP280_FORCEDMODE); // TODO Change i2c
   BMP280_ReadTemperatureAndPressure(&Temperature, &Pressure);
   	  // Communication start
-  HAL_UART_Receive_IT(&huart3, Buffor_Rx_USART, 8);
+  HAL_UART_Receive_IT(&huart3, Buffor_Rx_USART, 4);
   	  // Screen initialization
   SSD1306_Init(&hi2c2); // TODO change i2c
   GFX_SetFont(font_8x5);
@@ -420,7 +420,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 		// End of handling message
 		HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, GPIO_PIN_RESET);
 		// Listening setup
-		HAL_UART_Receive_IT(&huart3, Buffor_Rx_USART, 8);
+		HAL_UART_Receive_IT(&huart3, Buffor_Rx_USART, 4);
 	}
 }
 /* USER CODE END 4 */

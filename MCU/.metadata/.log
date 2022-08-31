@@ -31,3 +31,6 @@ Command-line arguments:  -os win32 -ws win32 -arch x86_64
 
 !ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2022-08-31 09:33:31.538
 !MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.core.resources 4 566 2022-08-31 13:57:08.067
+!MESSAGE Workspace was not properly initialized or has already shutdown.
