@@ -18,5 +18,5 @@ Komunikaty:
 	S - syringe set position
 	T - communication test
 	O - ON 
-	S - STOP
+	E - STOP
 	
