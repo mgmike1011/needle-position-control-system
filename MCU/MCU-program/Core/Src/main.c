@@ -48,6 +48,9 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+//
+// Direction control
+//
 #define FORWARD_NEEDLE 	RIGHT_DIR
 #define BACK_NEEDLE 	LEFT_DIR
 #define SUCK_SYRINGE	RIGHT_DIR
@@ -72,7 +75,7 @@
 //
 A4988_Drive Syringe = {	.NAME = "SYRINGE",
 						.STEPS = 200,
-						.RESOLUTION = 1,
+						.RESOLUTION = HALF_STEP,
 						.PORT_DIR = DIR_SYRINGE_GPIO_Port,
 						.PIN_DIR = DIR_SYRINGE_Pin,
 						.PORT_ENABLE = ENABLE_SYRINGE_GPIO_Port,
@@ -94,7 +97,7 @@ A4988_Drive Syringe = {	.NAME = "SYRINGE",
 						};
 A4988_Drive Needle = {	.NAME = "NEEDLE",
 						.STEPS = 200,
-						.RESOLUTION = 1,
+						.RESOLUTION = HALF_STEP,
 						.STEP_mm_RESOLUTION = 0.005
 						,.PORT_DIR = DIR_NEEDLE_GPIO_Port,
 						.PIN_DIR = DIR_NEEDLE_Pin,
@@ -253,10 +256,10 @@ int main(void)
 	  //
 	  // Communication - sending the data
 	  //
-	  if ((HAL_GetTick() - SoftTimer_USART)) {
+	  if ((HAL_GetTick() - SoftTimer_USART) > 400) {
 		  SoftTimer_USART = HAL_GetTick();
 		  // TODO implement communication system
-		  length_Buffor_USART = sprintf((char*)Buffor_USART,"{\" \":%.1u}",MESURE_Needle);
+		  length_Buffor_USART = sprintf((char*)Buffor_USART,"{\" \":%u}",MESURE_Needle);
 		  HAL_UART_Transmit(&huart3, Buffor_USART, length_Buffor_USART, 1000);
 	}
     /* USER CODE END WHILE */
@@ -339,10 +342,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 			if(MESURE_Needle <= Set_distance_needle){ // TODO check if correct
 				HAL_TIM_PWM_Stop(Needle.TIM_STEP, Needle.TIM_STEP_CHANNEL); // Stop needle
 			}
+//			else{
+//				HAL_TIM_PWM_Start(Needle.TIM_STEP, Needle.TIM_STEP_CHANNEL); // Start needle
+//			}
 		} else {
 			if(MESURE_Needle >= Set_distance_needle){ // TODO check if correct
 				HAL_TIM_PWM_Stop(Needle.TIM_STEP, Needle.TIM_STEP_CHANNEL); // Stop needle
 			}
+//			else{
+//				HAL_TIM_PWM_Start(Needle.TIM_STEP, Needle.TIM_STEP_CHANNEL); // Start needle
+//			}
 		}
 	}
 	else if (htim->Instance == TIM7) {
@@ -352,10 +361,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 			if (MESURE_Syringe <= Set_distance_syringe) {
 				HAL_TIM_PWM_Stop(Syringe.TIM_STEP, Syringe.TIM_STEP_CHANNEL); // Stop syringe
 			}
+//			else{
+//				HAL_TIM_PWM_Start(Syringe.TIM_STEP, Syringe.TIM_STEP_CHANNEL); // Stop syringe
+//			}
 		} else {
 			if (MESURE_Syringe >= Set_distance_syringe) { // TODO check if correct
 				HAL_TIM_PWM_Stop(Syringe.TIM_STEP, Syringe.TIM_STEP_CHANNEL); // Stop syringe
 			}
+//			else{
+//				HAL_TIM_PWM_Sart(Syringe.TIM_STEP, Syringe.TIM_STEP_CHANNEL); // Start syringe
+//			}
 		}
 	}
 }
