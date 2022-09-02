@@ -1,2 +1,2 @@
-# needle-position-control-system
-System sterowania położeniem igły punkcyjnej
+# System sterowania położeniem igły punkcyjnej
+Agnieszka Piórkowska, Miłosz Gajewski - Poznań 2022
