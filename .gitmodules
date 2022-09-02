@@ -1,0 +1,3 @@
+[submodule "GUI/INZ-GUI"]
+	path = GUI/INZ-GUI
+	url = https://github.com/mgmike1011/INZ-GUI.git
