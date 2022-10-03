@@ -49,3 +49,36 @@ Command-line arguments:  -os win32 -ws win32 -arch x86_64
 
 !ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2022-09-01 09:38:17.694
 !MESSAGE Started RMI Server, listening on port 41338
+!SESSION 2022-10-02 16:36:08.316 -----------------------------------------------
+eclipse.buildId=Version 1.9.0
+java.version=11.0.11
+java.vendor=AdoptOpenJDK
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=pl_PL
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2022-10-02 16:36:28.079
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2022-10-02 16:36:28.163
+!MESSAGE Log4j initialized with config file C:\Users\mgmil\Documents\needle-position-control-system\MCU\.metadata\.log4j.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2022-10-02 16:36:40.394
+!MESSAGE Started RMI Server, listening on port 41337
+!SESSION 2022-10-03 11:18:04.001 -----------------------------------------------
+eclipse.buildId=Version 1.9.0
+java.version=11.0.11
+java.vendor=AdoptOpenJDK
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=pl_PL
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2022-10-03 11:18:11.608
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2022-10-03 11:18:11.664
+!MESSAGE Log4j initialized with config file C:\Users\mgmil\Documents\needle-position-control-system\MCU\.metadata\.log4j.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2022-10-03 11:18:21.354
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2022-10-03 12:38:14.221
+!MESSAGE Indexed 'MCU-RTOS' (28 sources, 88 headers) in 3.32 sec: 7,121 declarations; 44,897 references; 0 unresolved inclusions; 1 syntax errors; 2 unresolved names (0.0038%)

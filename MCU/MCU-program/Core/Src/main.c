@@ -126,8 +126,8 @@ char Control_type = CLOSE_LOOP;
 //
 VL6180X_ Syringe_sensor;
 VL6180X_ Needle_sensor;
-volatile uint16_t MESURE_Needle = 0; // distance in mm
-volatile uint16_t MESURE_Syringe = 0; // distance in mm
+volatile uint16_t MEASURE_Needle = 0; // distance in mm
+volatile uint16_t MEASURE_Syringe = 0; // distance in mm
 //
 // Control
 //
@@ -213,8 +213,8 @@ int main(void)
   configureDefault_VL6180X(&Syringe_sensor);
   configureDefault_VL6180X(&Needle_sensor);
   	  // Initial measurement
-  MESURE_Needle = readRangeSingleMillimeters_VL6180X(&Needle_sensor);
-  MESURE_Syringe = readRangeSingleMillimeters_VL6180X(&Syringe_sensor);
+  MEASURE_Needle = readRangeSingleMillimeters_VL6180X(&Needle_sensor);
+  MEASURE_Syringe = readRangeSingleMillimeters_VL6180X(&Syringe_sensor);
 	  // Control initialization
   if (Control_type == CLOSE_LOOP) {
 	  HAL_TIM_Base_Start_IT(&htim6); // Needle - 5Hz
@@ -248,9 +248,20 @@ int main(void)
 	  if ((HAL_GetTick() - SoftTimer_OLED) > 500) {
 		  SoftTimer_OLED = HAL_GetTick();
 		  SSD1306_Clear(BLACK);
-		  sprintf(Message_OLED, "Needle control");
-		  GFX_DrawString(0, 0, Message_OLED, WHITE, 0);
-		  // TODO implement screen
+		  sprintf(Message_OLED, "Needle position");
+		  GFX_DrawString(20, 0, Message_OLED, WHITE, 0);
+		  GFX_DrawLine(0, 9, 128, 9, WHITE);
+		  sprintf(Message_OLED, "Set: %d mm",Set_distance_needle);
+		  GFX_DrawString(0, 12, Message_OLED, WHITE, 0);
+		  sprintf(Message_OLED, "Measure: %d mm",MEASURE_Needle);
+		  GFX_DrawString(0, 22, Message_OLED, WHITE, 0);
+		  sprintf(Message_OLED, "Syringe position");
+		  GFX_DrawString(15, 32, Message_OLED, WHITE, 0);
+		  GFX_DrawLine(0, 41, 128, 41, WHITE);
+		  sprintf(Message_OLED, "Set: %d mm",Set_distance_syringe);
+		  GFX_DrawString(0, 44, Message_OLED, WHITE, 0);
+		  sprintf(Message_OLED, "Measure: %d mm",MEASURE_Syringe);
+		  GFX_DrawString(0, 54, Message_OLED, WHITE, 0);
 		  SSD1306_Display();
 	  }
 	  //
@@ -258,8 +269,8 @@ int main(void)
 	  //
 	  if ((HAL_GetTick() - SoftTimer_USART) > 400) {
 		  SoftTimer_USART = HAL_GetTick();
-		  // TODO implement communication system
-		  length_Buffor_USART = sprintf((char*)Buffor_USART,"{\" \":%u}",MESURE_Needle);
+		  length_Buffor_USART = sprintf((char*)Buffor_USART,"{\"NP\":%d,\"SP\":%d,\"NS\":%d,\"SS\":%d,\"TM\":%f.1,\"FN\":%d,\"ST\":%d}\n\r",
+				  	  	  	  	  	  	  	  	  	  	  	 MEASURE_Needle,MEASURE_Syringe,Set_distance_needle,Set_distance_syringe,Temperature,0,1);
 		  HAL_UART_Transmit(&huart3, Buffor_USART, length_Buffor_USART, 1000);
 	}
     /* USER CODE END WHILE */
@@ -337,16 +348,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	//
 	else if (htim->Instance == TIM6) {
 		// Needle
-		MESURE_Needle = readRangeSingleMillimeters_VL6180X(&Needle_sensor); // Measurement
+		MEASURE_Needle = readRangeSingleMillimeters_VL6180X(&Needle_sensor); // Measurement
 		if (Needle.Current_Direction == FORWARD_NEEDLE) {
-			if(MESURE_Needle <= Set_distance_needle){ // TODO check if correct
+			if(MEASURE_Needle <= Set_distance_needle){ // TODO check if correct
 				HAL_TIM_PWM_Stop(Needle.TIM_STEP, Needle.TIM_STEP_CHANNEL); // Stop needle
 			}
 //			else{
 //				HAL_TIM_PWM_Start(Needle.TIM_STEP, Needle.TIM_STEP_CHANNEL); // Start needle
 //			}
 		} else {
-			if(MESURE_Needle >= Set_distance_needle){ // TODO check if correct
+			if(MEASURE_Needle >= Set_distance_needle){ // TODO check if correct
 				HAL_TIM_PWM_Stop(Needle.TIM_STEP, Needle.TIM_STEP_CHANNEL); // Stop needle
 			}
 //			else{
@@ -356,16 +367,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	}
 	else if (htim->Instance == TIM7) {
 		// Syringe
-		MESURE_Syringe = readRangeSingleMillimeters_VL6180X(&Syringe_sensor); // Measurement
+		MEASURE_Syringe = readRangeSingleMillimeters_VL6180X(&Syringe_sensor); // Measurement
 		if (Syringe.Current_Direction == BLOW_SYRINGE) { // TODO check if correct
-			if (MESURE_Syringe <= Set_distance_syringe) {
+			if (MEASURE_Syringe <= Set_distance_syringe) {
 				HAL_TIM_PWM_Stop(Syringe.TIM_STEP, Syringe.TIM_STEP_CHANNEL); // Stop syringe
 			}
 //			else{
 //				HAL_TIM_PWM_Start(Syringe.TIM_STEP, Syringe.TIM_STEP_CHANNEL); // Stop syringe
 //			}
 		} else {
-			if (MESURE_Syringe >= Set_distance_syringe) { // TODO check if correct
+			if (MEASURE_Syringe >= Set_distance_syringe) { // TODO check if correct
 				HAL_TIM_PWM_Stop(Syringe.TIM_STEP, Syringe.TIM_STEP_CHANNEL); // Stop syringe
 			}
 //			else{
