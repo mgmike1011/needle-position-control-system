@@ -1,0 +1,300 @@
+/* USER CODE BEGIN Header */
+/**
+  ******************************************************************************
+  * File Name          : freertos.c
+  * Description        : Code for freertos applications
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2022 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
+/* USER CODE END Header */
+
+/* Includes ------------------------------------------------------------------*/
+#include "FreeRTOS.h"
+#include "task.h"
+#include "main.h"
+#include "cmsis_os.h"
+
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
+// Motor drive
+#include "A4988_Drive.h"
+// Sensor
+#include "VL6180X.h"
+// Screen
+#include "SSD1306_OLED.h"
+#include "GFX_BW.h"
+#include "fonts/fonts.h"
+// Temperature sensor
+#include "BMPXX80.h"
+// printf
+#include "printf.h"
+//
+#include "usart.h"
+#include "i2c.h"
+#include "tim.h"
+/* USER CODE END Includes */
+
+/* Private typedef -----------------------------------------------------------*/
+/* USER CODE BEGIN PTD */
+
+/* USER CODE END PTD */
+
+/* Private define ------------------------------------------------------------*/
+/* USER CODE BEGIN PD */
+//
+// Direction control
+//
+#define FORWARD_NEEDLE 	RIGHT_DIR
+#define BACK_NEEDLE 	LEFT_DIR
+#define SUCK_SYRINGE	RIGHT_DIR
+#define BLOW_SYRINGE	LEFT_DIR
+//
+// Control type
+//
+#define OPEN_LOOP 1
+#define CLOSE_LOOP 2
+/* USER CODE END PD */
+
+/* Private macro -------------------------------------------------------------*/
+/* USER CODE BEGIN PM */
+
+/* USER CODE END PM */
+
+/* Private variables ---------------------------------------------------------*/
+/* USER CODE BEGIN Variables */
+
+/* USER CODE END Variables */
+/* Definitions for HeartBeatTast */
+osThreadId_t HeartBeatTastHandle;
+const osThreadAttr_t HeartBeatTast_attributes = {
+  .name = "HeartBeatTast",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
+/* Definitions for SyringeControlT */
+osThreadId_t SyringeControlTHandle;
+const osThreadAttr_t SyringeControlT_attributes = {
+  .name = "SyringeControlT",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityAboveNormal,
+};
+/* Definitions for OLEDTask */
+osThreadId_t OLEDTaskHandle;
+const osThreadAttr_t OLEDTask_attributes = {
+  .name = "OLEDTask",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for MutexPrintf */
+osMutexId_t MutexPrintfHandle;
+const osMutexAttr_t MutexPrintf_attributes = {
+  .name = "MutexPrintf"
+};
+
+/* Private function prototypes -----------------------------------------------*/
+/* USER CODE BEGIN FunctionPrototypes */
+//
+// printf function prototype
+//
+void _putchar(char character);
+/* USER CODE END FunctionPrototypes */
+
+void StartHeartBeatTast(void *argument);
+void StartSyringeControlTask(void *argument);
+void StartOLEDTask(void *argument);
+
+void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
+
+/**
+  * @brief  FreeRTOS initialization
+  * @param  None
+  * @retval None
+  */
+void MX_FREERTOS_Init(void) {
+  /* USER CODE BEGIN Init */
+
+  /* USER CODE END Init */
+  /* Create the mutex(es) */
+  /* creation of MutexPrintf */
+  MutexPrintfHandle = osMutexNew(&MutexPrintf_attributes);
+
+  /* USER CODE BEGIN RTOS_MUTEX */
+  /* add mutexes, ... */
+  /* USER CODE END RTOS_MUTEX */
+
+  /* USER CODE BEGIN RTOS_SEMAPHORES */
+  /* add semaphores, ... */
+  /* USER CODE END RTOS_SEMAPHORES */
+
+  /* USER CODE BEGIN RTOS_TIMERS */
+  /* start timers, add new ones, ... */
+  /* USER CODE END RTOS_TIMERS */
+
+  /* USER CODE BEGIN RTOS_QUEUES */
+  /* add queues, ... */
+  /* USER CODE END RTOS_QUEUES */
+
+  /* Create the thread(s) */
+  /* creation of HeartBeatTast */
+  HeartBeatTastHandle = osThreadNew(StartHeartBeatTast, NULL, &HeartBeatTast_attributes);
+
+  /* creation of SyringeControlT */
+  SyringeControlTHandle = osThreadNew(StartSyringeControlTask, NULL, &SyringeControlT_attributes);
+
+  /* creation of OLEDTask */
+  OLEDTaskHandle = osThreadNew(StartOLEDTask, NULL, &OLEDTask_attributes);
+
+  /* USER CODE BEGIN RTOS_THREADS */
+  /* add threads, ... */
+  /* USER CODE END RTOS_THREADS */
+
+  /* USER CODE BEGIN RTOS_EVENTS */
+  /* add events, ... */
+  /* USER CODE END RTOS_EVENTS */
+
+}
+
+/* USER CODE BEGIN Header_StartHeartBeatTast */
+/**
+  * @brief  Main basic function informing about MCU work.
+  * @priority: Low
+  * @param  argument: Not used
+  * @retval None
+  */
+/* USER CODE END Header_StartHeartBeatTast */
+void StartHeartBeatTast(void *argument)
+{
+  /* USER CODE BEGIN StartHeartBeatTast */
+  /* Infinite loop */
+  for(;;)
+  {
+	  HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
+	  osDelay(1000);
+  }
+  /* USER CODE END StartHeartBeatTast */
+}
+
+/* USER CODE BEGIN Header_StartSyringeControlTask */
+/**
+* @brief Function implementing the SyringeControlT thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartSyringeControlTask */
+void StartSyringeControlTask(void *argument)
+{
+  /* USER CODE BEGIN StartSyringeControlTask */
+	//
+	// Motor controllers
+	//
+//	A4988_Drive Syringe = {	.NAME = "SYRINGE",
+//							.STEPS = 200,
+//							.RESOLUTION = HALF_STEP,
+//							.PORT_DIR = DIR_SYRINGE_GPIO_Port,
+//							.PIN_DIR = DIR_SYRINGE_Pin,
+//							.PORT_ENABLE = ENABLE_SYRINGE_GPIO_Port,
+//							.PIN_ENABLE = ENABLE_SYRINGE_Pin,
+//							.PORT_MS1 = MS1_SYRINGE_GPIO_Port,
+//							.PIN_MS1 = MS1_SYRINGE_Pin,
+//							.PORT_MS2 = MS2_SYRINGE_GPIO_Port,
+//							.PIN_MS2 = MS2_SYRINGE_Pin,
+//							.PORT_MS3 = MS3_SYRINGE_GPIO_Port,
+//							.PIN_MS3 = MS3_SYRINGE_Pin,
+//							.STEP_mm_RESOLUTION = 0.01,
+//							.PORT_RESET = RESET_SYRINGE_GPIO_Port,
+//							.PIN_RESET = RESET_SYRINGE_Pin,
+//							.PORT_SLEEP = SLEEP_SYRINGE_GPIO_Port,
+//							.PIN_SLEEP = SLEEP_SYRINGE_Pin,
+//							.TIM_STEP = &htim2,
+//							.TIM_STEP_CHANNEL = TIM_CHANNEL_1,
+//							.TIM_COUNTER_SLAVE = &htim3
+//							};
+	//
+	// Distance Sensors
+	//
+//	VL6180X_ Syringe_sensor;
+	uint16_t MEASURE_Syringe = 0; // distance in mm
+	//
+	// Control
+	//
+	uint16_t Set_distance_syringe = 0;
+	//
+	// Initialization
+	//
+	Init_A4988(&Syringe); // Drive initialization
+//	VL6180X_Init(&Syringe_sensor, &hi2c4); // Sensor initialization
+//	configureDefault_VL6180X(&Syringe_sensor); // Sensor initialization
+//	MEASURE_Syringe = readRangeSingleMillimeters_VL6180X(&Syringe_sensor); // Initial measurement
+  /* Infinite loop */
+  for(;;)
+  {
+	  printf("Hello world! %d %d \n\r",MEASURE_Syringe,Set_distance_syringe);
+    osDelay(200);
+  }
+  /* USER CODE END StartSyringeControlTask */
+}
+
+/* USER CODE BEGIN Header_StartOLEDTask */
+/**
+* @brief OLED screen print
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartOLEDTask */
+void StartOLEDTask(void *argument)
+{
+  /* USER CODE BEGIN StartOLEDTask */
+	// Variables
+	char Message_OLED[32];
+	//uint16_t length_Buffor_OLED;
+	// Screen initialization
+	SSD1306_Init(&hi2c2);
+	GFX_SetFont(font_8x5);
+	GFX_SetFontSize(1);
+	SSD1306_Clear(BLACK);
+	SSD1306_Display();
+  /* Infinite loop */
+  for(;;)
+  {
+	  // Display functions
+	  SSD1306_Clear(BLACK);
+	  sprintf(Message_OLED, "Needle position");
+	  GFX_DrawString(20, 0, Message_OLED, WHITE, 0);
+	  GFX_DrawLine(0, 9, 128, 9, WHITE);
+	  sprintf(Message_OLED, "Set: %d mm", 10); //Set_distance_needle
+	  GFX_DrawString(0, 12, Message_OLED, WHITE, 0);
+	  sprintf(Message_OLED, "Measure: %d mm", 10); //MEASURE_Needle
+	  GFX_DrawString(0, 22, Message_OLED, WHITE, 0);
+	  sprintf(Message_OLED, "Syringe position");
+	  GFX_DrawString(15, 32, Message_OLED, WHITE, 0);
+	  GFX_DrawLine(0, 41, 128, 41, WHITE);
+	  sprintf(Message_OLED, "Set: %d mm", 10); //Set_distance_syringe
+	  GFX_DrawString(0, 44, Message_OLED, WHITE, 0);
+	  sprintf(Message_OLED, "Measure: %d mm", 10); //MEASURE_Syringe
+	  GFX_DrawString(0, 54, Message_OLED, WHITE, 0);
+	  SSD1306_Display();
+	  // Time interval
+	  osDelay(500);
+  }
+  /* USER CODE END StartOLEDTask */
+}
+
+/* Private application code --------------------------------------------------*/
+/* USER CODE BEGIN Application */
+void _putchar(char character)
+{
+	osMutexAcquire(MutexPrintfHandle, osWaitForever);
+	HAL_UART_Transmit(&huart3, (uint8_t*)&character, 1, 1000);
+	osMutexRelease(MutexPrintfHandle);
+}
+/* USER CODE END Application */
+

@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="else{"/>
+		<item key="selection" value="MEASURE_Needle"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="MESURE_Needle"/>
+			<item value="MESURE_Syringe"/>
 			<item value="else{"/>
 			<item value="SoftTimer"/>
 			<item value="//"/>
 			<item value=""/>
 		</list>
 		<list key="replacehistory">
+			<item value="MEASURE_Needle"/>
+			<item value="MEASURE_Syringe"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">

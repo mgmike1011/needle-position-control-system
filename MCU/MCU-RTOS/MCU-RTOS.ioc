@@ -1,6 +1,12 @@
 #MicroXplorer Configuration settings - do not modify
-FREERTOS.IPParameters=Tasks01,configUSE_NEWLIB_REENTRANT
-FREERTOS.Tasks01=defaultTask,24,128,StartDefaultTask,Default,NULL,Dynamic,NULL,NULL
+FREERTOS.BinarySemaphores01=SyringeInfoSemaphore,Dynamic,NULL
+FREERTOS.FootprintOK=true
+FREERTOS.IPParameters=Tasks01,configUSE_NEWLIB_REENTRANT,FootprintOK,configMINIMAL_STACK_SIZE,Mutexes01,Queues01,Timers01,BinarySemaphores01
+FREERTOS.Mutexes01=MutexPrintf,Dynamic,NULL;MutexI2C2,Dynamic,NULL;MutexI2C4,Dynamic,NULL
+FREERTOS.Queues01=QueueSyringeInfo,8,Syringe_info,0,Dynamic,NULL,NULL
+FREERTOS.Tasks01=HeartBeatTast,8,128,StartHeartBeatTast,Default,NULL,Dynamic,NULL,NULL;SyringeControlT,32,512,StartSyringeControlTask,Default,NULL,Dynamic,NULL,NULL;OLEDTask,24,256,StartOLEDTask,Default,NULL,Dynamic,NULL,NULL
+FREERTOS.Timers01=SyringeInfoTimer,SyringeInfoTimerCallback,osTimerPeriodic,Default,NULL,Dynamic,NULL
+FREERTOS.configMINIMAL_STACK_SIZE=128
 FREERTOS.configUSE_NEWLIB_REENTRANT=1
 File.Version=6
 GPIO.groupedBy=Group By Peripherals
@@ -371,9 +377,10 @@ TIM2.TIM_MasterOutputTrigger=TIM_TRGO_UPDATE
 TIM3.IPParameters=Period
 TIM3.Period=0
 TIM4.Channel-PWM\ Generation1\ CH1=TIM_CHANNEL_1
-TIM4.IPParameters=Channel-PWM Generation1 CH1,Prescaler,Period,TIM_MasterOutputTrigger
+TIM4.IPParameters=Channel-PWM Generation1 CH1,Prescaler,Period,TIM_MasterOutputTrigger,Pulse-PWM Generation1 CH1
 TIM4.Period=999
 TIM4.Prescaler=71
+TIM4.Pulse-PWM\ Generation1\ CH1=499
 TIM4.TIM_MasterOutputTrigger=TIM_TRGO_UPDATE
 TIM5.IPParameters=Period
 TIM5.Period=0
