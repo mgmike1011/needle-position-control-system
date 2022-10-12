@@ -5896,7 +5896,7 @@ int main(void)
  8003066:	4603      	mov	r3, r0
  8003068:	4a31      	ldr	r2, [pc, #196]	; (8003130 <main+0x2cc>)
  800306a:	6013      	str	r3, [r2, #0]
-		  length_Buffor_USART = sprintf((char*)Buffor_USART,"{\"NP\":%d,\"SP\":%d,\"NS\":%d,\"SS\":%d,\"TM\":%f.1,\"FN\":%d,\"ST\":%d}\n\r",
+		  length_Buffor_USART = sprintf((char*)Buffor_USART,"{\"NP\":%d,\"SP\":%d,\"NS\":%d,\"SS\":%d,\"TM\":%.1f,\"FN\":%d,\"ST\":%d}\n\r",
  800306c:	4b1e      	ldr	r3, [pc, #120]	; (80030e8 <main+0x284>)
  800306e:	881b      	ldrh	r3, [r3, #0]
  8003070:	b29b      	uxth	r3, r3

@@ -269,7 +269,7 @@ int main(void)
 	  //
 	  if ((HAL_GetTick() - SoftTimer_USART) > 400) {
 		  SoftTimer_USART = HAL_GetTick();
-		  length_Buffor_USART = sprintf((char*)Buffor_USART,"{\"NP\":%d,\"SP\":%d,\"NS\":%d,\"SS\":%d,\"TM\":%f.1,\"FN\":%d,\"ST\":%d}\n\r",
+		  length_Buffor_USART = sprintf((char*)Buffor_USART,"{\"NP\":%d,\"SP\":%d,\"NS\":%d,\"SS\":%d,\"TM\":%.1f,\"FN\":%d,\"ST\":%d}\n\r",
 				  	  	  	  	  	  	  	  	  	  	  	 MEASURE_Needle,MEASURE_Syringe,Set_distance_needle,Set_distance_syringe,Temperature,0,1);
 		  HAL_UART_Transmit(&huart3, Buffor_USART, length_Buffor_USART, 1000);
 	}

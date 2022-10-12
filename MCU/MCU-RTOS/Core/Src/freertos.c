@@ -92,6 +92,8 @@ typedef struct{
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
 
+uint8_t Buffor_Rx_USART[4];
+
 /* USER CODE END Variables */
 /* Definitions for HeartBeatTast */
 osThreadId_t HeartBeatTastHandle;
@@ -114,15 +116,71 @@ const osThreadAttr_t OLEDTask_attributes = {
   .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
-/* Definitions for QueueSyringeInfo */
-osMessageQueueId_t QueueSyringeInfoHandle;
-const osMessageQueueAttr_t QueueSyringeInfo_attributes = {
-  .name = "QueueSyringeInfo"
+/* Definitions for NeedleControlTa */
+osThreadId_t NeedleControlTaHandle;
+const osThreadAttr_t NeedleControlTa_attributes = {
+  .name = "NeedleControlTa",
+  .stack_size = 512 * 4,
+  .priority = (osPriority_t) osPriorityAboveNormal1,
 };
-/* Definitions for SyringeInfoTimer */
-osTimerId_t SyringeInfoTimerHandle;
-const osTimerAttr_t SyringeInfoTimer_attributes = {
-  .name = "SyringeInfoTimer"
+/* Definitions for CommunicationTa */
+osThreadId_t CommunicationTaHandle;
+const osThreadAttr_t CommunicationTa_attributes = {
+  .name = "CommunicationTa",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityHigh,
+};
+/* Definitions for TemperatureTask */
+osThreadId_t TemperatureTaskHandle;
+const osThreadAttr_t TemperatureTask_attributes = {
+  .name = "TemperatureTask",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
+/* Definitions for QueueSyringeInfoOLED */
+osMessageQueueId_t QueueSyringeInfoOLEDHandle;
+const osMessageQueueAttr_t QueueSyringeInfoOLED_attributes = {
+  .name = "QueueSyringeInfoOLED"
+};
+/* Definitions for QueueSyringeInfoCommunication */
+osMessageQueueId_t QueueSyringeInfoCommunicationHandle;
+const osMessageQueueAttr_t QueueSyringeInfoCommunication_attributes = {
+  .name = "QueueSyringeInfoCommunication"
+};
+/* Definitions for QueueNeedleInfoOLED */
+osMessageQueueId_t QueueNeedleInfoOLEDHandle;
+const osMessageQueueAttr_t QueueNeedleInfoOLED_attributes = {
+  .name = "QueueNeedleInfoOLED"
+};
+/* Definitions for QueueNeedleInfoCommunication */
+osMessageQueueId_t QueueNeedleInfoCommunicationHandle;
+const osMessageQueueAttr_t QueueNeedleInfoCommunication_attributes = {
+  .name = "QueueNeedleInfoCommunication"
+};
+/* Definitions for QueueTemperatureCommunication */
+osMessageQueueId_t QueueTemperatureCommunicationHandle;
+const osMessageQueueAttr_t QueueTemperatureCommunication_attributes = {
+  .name = "QueueTemperatureCommunication"
+};
+/* Definitions for SyringeInfoTimerOLED */
+osTimerId_t SyringeInfoTimerOLEDHandle;
+const osTimerAttr_t SyringeInfoTimerOLED_attributes = {
+  .name = "SyringeInfoTimerOLED"
+};
+/* Definitions for NeedleInfoTimerOLED */
+osTimerId_t NeedleInfoTimerOLEDHandle;
+const osTimerAttr_t NeedleInfoTimerOLED_attributes = {
+  .name = "NeedleInfoTimerOLED"
+};
+/* Definitions for SyringeInfoTimerCommunication */
+osTimerId_t SyringeInfoTimerCommunicationHandle;
+const osTimerAttr_t SyringeInfoTimerCommunication_attributes = {
+  .name = "SyringeInfoTimerCommunication"
+};
+/* Definitions for NeedleInfoTimerCommunication */
+osTimerId_t NeedleInfoTimerCommunicationHandle;
+const osTimerAttr_t NeedleInfoTimerCommunication_attributes = {
+  .name = "NeedleInfoTimerCommunication"
 };
 /* Definitions for MutexPrintf */
 osMutexId_t MutexPrintfHandle;
@@ -139,10 +197,30 @@ osMutexId_t MutexI2C4Handle;
 const osMutexAttr_t MutexI2C4_attributes = {
   .name = "MutexI2C4"
 };
-/* Definitions for SyringeInfoSemaphore */
-osSemaphoreId_t SyringeInfoSemaphoreHandle;
-const osSemaphoreAttr_t SyringeInfoSemaphore_attributes = {
-  .name = "SyringeInfoSemaphore"
+/* Definitions for SyringeInfoOLEDSemaphore */
+osSemaphoreId_t SyringeInfoOLEDSemaphoreHandle;
+const osSemaphoreAttr_t SyringeInfoOLEDSemaphore_attributes = {
+  .name = "SyringeInfoOLEDSemaphore"
+};
+/* Definitions for NeedleInfoOLEDSemaphore */
+osSemaphoreId_t NeedleInfoOLEDSemaphoreHandle;
+const osSemaphoreAttr_t NeedleInfoOLEDSemaphore_attributes = {
+  .name = "NeedleInfoOLEDSemaphore"
+};
+/* Definitions for TemperatureInfoCommunicationSemaphore */
+osSemaphoreId_t TemperatureInfoCommunicationSemaphoreHandle;
+const osSemaphoreAttr_t TemperatureInfoCommunicationSemaphore_attributes = {
+  .name = "TemperatureInfoCommunicationSemaphore"
+};
+/* Definitions for SyringeInfoCommunicationSemaphore */
+osSemaphoreId_t SyringeInfoCommunicationSemaphoreHandle;
+const osSemaphoreAttr_t SyringeInfoCommunicationSemaphore_attributes = {
+  .name = "SyringeInfoCommunicationSemaphore"
+};
+/* Definitions for NeedleInfoCommunicationSemaphore */
+osSemaphoreId_t NeedleInfoCommunicationSemaphoreHandle;
+const osSemaphoreAttr_t NeedleInfoCommunicationSemaphore_attributes = {
+  .name = "NeedleInfoCommunicationSemaphore"
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -156,7 +234,13 @@ void _putchar(char character);
 void StartHeartBeatTast(void *argument);
 void StartSyringeControlTask(void *argument);
 void StartOLEDTask(void *argument);
-void SyringeInfoTimerCallback(void *argument);
+void StartNeedleControlTask(void *argument);
+void StartCommunicationTask(void *argument);
+void StartTemperatureTask(void *argument);
+void SyringeInfoTimerOLEDCallback(void *argument);
+void NeedleInfoTimerOLEDCallback(void *argument);
+void SyringeInfoTimerCommunicationCallback(void *argument);
+void NeedleInfoTimerCommunicationCallback(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -184,24 +268,57 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_MUTEX */
 
   /* Create the semaphores(s) */
-  /* creation of SyringeInfoSemaphore */
-  SyringeInfoSemaphoreHandle = osSemaphoreNew(1, 1, &SyringeInfoSemaphore_attributes);
+  /* creation of SyringeInfoOLEDSemaphore */
+  SyringeInfoOLEDSemaphoreHandle = osSemaphoreNew(1, 1, &SyringeInfoOLEDSemaphore_attributes);
+
+  /* creation of NeedleInfoOLEDSemaphore */
+  NeedleInfoOLEDSemaphoreHandle = osSemaphoreNew(1, 1, &NeedleInfoOLEDSemaphore_attributes);
+
+  /* creation of TemperatureInfoCommunicationSemaphore */
+  TemperatureInfoCommunicationSemaphoreHandle = osSemaphoreNew(1, 1, &TemperatureInfoCommunicationSemaphore_attributes);
+
+  /* creation of SyringeInfoCommunicationSemaphore */
+  SyringeInfoCommunicationSemaphoreHandle = osSemaphoreNew(1, 1, &SyringeInfoCommunicationSemaphore_attributes);
+
+  /* creation of NeedleInfoCommunicationSemaphore */
+  NeedleInfoCommunicationSemaphoreHandle = osSemaphoreNew(1, 1, &NeedleInfoCommunicationSemaphore_attributes);
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
   /* USER CODE END RTOS_SEMAPHORES */
 
   /* Create the timer(s) */
-  /* creation of SyringeInfoTimer */
-  SyringeInfoTimerHandle = osTimerNew(SyringeInfoTimerCallback, osTimerPeriodic, NULL, &SyringeInfoTimer_attributes);
+  /* creation of SyringeInfoTimerOLED */
+  SyringeInfoTimerOLEDHandle = osTimerNew(SyringeInfoTimerOLEDCallback, osTimerPeriodic, NULL, &SyringeInfoTimerOLED_attributes);
+
+  /* creation of NeedleInfoTimerOLED */
+  NeedleInfoTimerOLEDHandle = osTimerNew(NeedleInfoTimerOLEDCallback, osTimerPeriodic, NULL, &NeedleInfoTimerOLED_attributes);
+
+  /* creation of SyringeInfoTimerCommunication */
+  SyringeInfoTimerCommunicationHandle = osTimerNew(SyringeInfoTimerCommunicationCallback, osTimerPeriodic, NULL, &SyringeInfoTimerCommunication_attributes);
+
+  /* creation of NeedleInfoTimerCommunication */
+  NeedleInfoTimerCommunicationHandle = osTimerNew(NeedleInfoTimerCommunicationCallback, osTimerPeriodic, NULL, &NeedleInfoTimerCommunication_attributes);
 
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
 
   /* Create the queue(s) */
-  /* creation of QueueSyringeInfo */
-  QueueSyringeInfoHandle = osMessageQueueNew (8, sizeof(Syringe_info), &QueueSyringeInfo_attributes);
+  /* creation of QueueSyringeInfoOLED */
+  QueueSyringeInfoOLEDHandle = osMessageQueueNew (8, sizeof(Syringe_info), &QueueSyringeInfoOLED_attributes);
+
+  /* creation of QueueSyringeInfoCommunication */
+  QueueSyringeInfoCommunicationHandle = osMessageQueueNew (2, sizeof(Syringe_info), &QueueSyringeInfoCommunication_attributes);
+
+  /* creation of QueueNeedleInfoOLED */
+  QueueNeedleInfoOLEDHandle = osMessageQueueNew (8, sizeof(Needle_info), &QueueNeedleInfoOLED_attributes);
+
+  /* creation of QueueNeedleInfoCommunication */
+  QueueNeedleInfoCommunicationHandle = osMessageQueueNew (4, sizeof(Needle_info), &QueueNeedleInfoCommunication_attributes);
+
+  /* creation of QueueTemperatureCommunication */
+  QueueTemperatureCommunicationHandle = osMessageQueueNew (4, sizeof(Temperature_info), &QueueTemperatureCommunication_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
@@ -216,6 +333,15 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of OLEDTask */
   OLEDTaskHandle = osThreadNew(StartOLEDTask, NULL, &OLEDTask_attributes);
+
+  /* creation of NeedleControlTa */
+  NeedleControlTaHandle = osThreadNew(StartNeedleControlTask, NULL, &NeedleControlTa_attributes);
+
+  /* creation of CommunicationTa */
+  CommunicationTaHandle = osThreadNew(StartCommunicationTask, NULL, &CommunicationTa_attributes);
+
+  /* creation of TemperatureTask */
+  TemperatureTaskHandle = osThreadNew(StartTemperatureTask, NULL, &TemperatureTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -242,14 +368,15 @@ void StartHeartBeatTast(void *argument)
   for(;;)
   {
 	  HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
-	  osDelay(1000);
+	  osDelay((1000 * osKernelGetTickFreq()) / 1000);
   }
   /* USER CODE END StartHeartBeatTast */
 }
 
 /* USER CODE BEGIN Header_StartSyringeControlTask */
 /**
-* @brief Function implementing the SyringeControlT thread.
+* @brief Function implementing the SyringeControlTask thread.
+* @priority: Above normal
 * @param argument: Not used
 * @retval None
 */
@@ -290,62 +417,57 @@ void StartSyringeControlTask(void *argument)
 	// Queue info
 	//
 	Syringe_info _Syringe_info;
-	//###################################//###################################
-	  _Syringe_info.MEASURE_Syringe = 10;
-	  _Syringe_info.Set_distance_syringe = 20;
-	//###################################//###################################
 	//
 	// Initialization
 	//
-//	Init_A4988(&Syringe); // Drive initialization
-//	osMutexAcquire(MutexI2C4Handle, osWaitForever);
-//	VL6180X_Init(&Syringe_sensor, &hi2c4); // Sensor initialization
-//	osMutexRelease(MutexI2C4Handle);
-//	configureDefault_VL6180X(&Syringe_sensor); // Sensor initialization
-//	osMutexAcquire(MutexI2C4Handle, osWaitForever);
-//	MEASURE_Syringe = readRangeSingleMillimeters_VL6180X(&Syringe_sensor); // Initial measurement
-//	osMutexRelease(MutexI2C4Handle);
-	osTimerStart(SyringeInfoTimerHandle, 500);
+	Init_A4988(&Syringe); // Drive initialization
+
+	osMutexAcquire(MutexI2C4Handle, osWaitForever);
+	VL6180X_Init(&Syringe_sensor, &hi2c4); // Sensor initialization
+	configureDefault_VL6180X(&Syringe_sensor); // Sensor initialization
+	osMutexRelease(MutexI2C4Handle);
+
+	osMutexAcquire(MutexI2C4Handle, osWaitForever);
+	_Syringe_info.MEASURE_Syringe = readRangeSingleMillimeters_VL6180X(&Syringe_sensor); // Initial measurement
+	_Syringe_info.Set_distance_syringe = _Syringe_info.MEASURE_Syringe;
+	osMutexRelease(MutexI2C4Handle);
+
+	//
+	// Timers
+	//
+	osTimerStart(SyringeInfoTimerOLEDHandle, (550 * osKernelGetTickFreq()) / 1000 ); // OLED Timer
+	osTimerStart(SyringeInfoTimerCommunicationHandle, (550 * osKernelGetTickFreq()) / 1000 ); // Communication Timer
+
   /* Infinite loop */
   for(;;)
   {
-	  //###################################//###################################
-	  _Syringe_info.MEASURE_Syringe += 1;
-	  _Syringe_info.Set_distance_syringe += 2;
-	  //###################################//###################################
+	  // Get SetPoint
+	  	  // TODO
 
+	  //
 	  // Read measurement from sensor
-//	  osMutexAcquire(MutexI2C4Handle, osWaitForever);
-//	  _Syringe_info.MEASURE_Syringe = readRangeSingleMillimeters_VL6180X(&Syringe_sensor); // Measurement
-//	  osMutexRelease(MutexI2C4Handle);
+	  //
+	  osMutexAcquire(MutexI2C4Handle, osWaitForever);
+	  _Syringe_info.MEASURE_Syringe = readRangeSingleMillimeters_VL6180X(&Syringe_sensor); // Measurement
+	  osMutexRelease(MutexI2C4Handle);
 
+	  //
 	  // Send data to queue
-	  if (osOK == osSemaphoreAcquire(SyringeInfoSemaphoreHandle, 0)) {
-	  		osMessageQueuePut(QueueSyringeInfoHandle, &_Syringe_info, 0, osWaitForever);
-	  	}
+	  //
+	  if (osOK == osSemaphoreAcquire(SyringeInfoCommunicationSemaphoreHandle, 0)){ // Send to communication
+		  osMessageQueuePut(QueueSyringeInfoCommunicationHandle, &_Syringe_info, 0, osWaitForever);
+	  }
+	  if (osOK == osSemaphoreAcquire(SyringeInfoOLEDSemaphoreHandle, 0)) { // Send to OLED
+	  		osMessageQueuePut(QueueSyringeInfoOLEDHandle, &_Syringe_info, 0, osWaitForever);
+	  }
 
-	  // Control the motor
-//	  if (LEFT_DIR == BLOW_SYRINGE) { // TODO implement
-//		  if (MEASURE_Syringe <= Set_distance_syringe) {
-//			  HAL_TIM_PWM_Stop(Syringe.TIM_STEP, Syringe.TIM_STEP_CHANNEL); // Stop syringe
-//		  }
-//	  //			else{
-//	  //				HAL_TIM_PWM_Start(Syringe.TIM_STEP, Syringe.TIM_STEP_CHANNEL); // Start syringe
-//	  //			}
-//	  } else {
-//		  if (MEASURE_Syringe >= Set_distance_syringe) { // TODO check if correct
-//			  HAL_TIM_PWM_Stop(Syringe.TIM_STEP, Syringe.TIM_STEP_CHANNEL); // Stop syringe
-//		  }
-//	  //			else{
-//	  //				HAL_TIM_PWM_Sart(Syringe.TIM_STEP, Syringe.TIM_STEP_CHANNEL); // Start syringe
-//	  //			}
-//	  }
+	  //
+	  // Control algorithm
+	  //
+	  // TODO implement
 
-	  //###################################//###################################
-	  printf("Hello world! %d %d \n\r", _Syringe_info.MEASURE_Syringe , _Syringe_info.Set_distance_syringe);
-	  //###################################//###################################
 	  // Time interval
-	  osDelay(200);
+	  osDelay((200 * osKernelGetTickFreq()) / 1000);
   }
   /* USER CODE END StartSyringeControlTask */
 }
@@ -353,6 +475,7 @@ void StartSyringeControlTask(void *argument)
 /* USER CODE BEGIN Header_StartOLEDTask */
 /**
 * @brief OLED screen print
+* @priority: Below normal
 * @param argument: Not used
 * @retval None
 */
@@ -372,16 +495,29 @@ void StartOLEDTask(void *argument)
 	osMutexAcquire(MutexI2C4Handle, osWaitForever);
 	SSD1306_Init(&hi2c4);
 	osMutexRelease(MutexI2C4Handle);
+
 	GFX_SetFont(font_8x5);
 	GFX_SetFontSize(1);
+
 	SSD1306_Clear(BLACK);
+
+	osMutexAcquire(MutexI2C4Handle, osWaitForever);
 	SSD1306_Display();
+	osMutexRelease(MutexI2C4Handle);
   /* Infinite loop */
   for(;;)
   {
+	  //
+	  // Get data from queues
+	  //
 	  // Get data from Syringe info queue
-	  osMessageQueueGet(QueueSyringeInfoHandle, &_Syringe_info, NULL, 0);
-	  // Display functions
+	  osMessageQueueGet(QueueSyringeInfoOLEDHandle, &_Syringe_info, NULL, 0);
+	  // Get data from Needle info queue
+	  osMessageQueueGet(QueueNeedleInfoOLEDHandle, &_Needle_info, NULL, 0);
+
+	  //
+	  // Make message
+	  //
 	  SSD1306_Clear(BLACK);
 	  sprintf(Message_OLED, "Needle position");
 	  GFX_DrawString(20, 0, Message_OLED, WHITE, 0);
@@ -397,19 +533,215 @@ void StartOLEDTask(void *argument)
 	  GFX_DrawString(0, 44, Message_OLED, WHITE, 0);
 	  sprintf(Message_OLED, "Measure: %d mm", _Syringe_info.MEASURE_Syringe); //MEASURE_Syringe
 	  GFX_DrawString(0, 54, Message_OLED, WHITE, 0);
+
+	  // Display
+	  osMutexAcquire(MutexI2C4Handle, osWaitForever);
 	  SSD1306_Display();
+	  osMutexRelease(MutexI2C4Handle);
+
 	  // Time interval
-	  osDelay(500);
+	  osDelay((500 * osKernelGetTickFreq()) / 1000);
   }
   /* USER CODE END StartOLEDTask */
 }
 
-/* SyringeInfoTimerCallback function */
-void SyringeInfoTimerCallback(void *argument)
+/* USER CODE BEGIN Header_StartNeedleControlTask */
+/**
+* @brief Function implementing the NeedleControlTask thread.
+* @priority: Above normal 1
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartNeedleControlTask */
+void StartNeedleControlTask(void *argument)
 {
-  /* USER CODE BEGIN SyringeInfoTimerCallback */
-	osSemaphoreRelease(SyringeInfoSemaphoreHandle);
-  /* USER CODE END SyringeInfoTimerCallback */
+  /* USER CODE BEGIN StartNeedleControlTask */
+	//
+	// Motor controllers
+	//
+	A4988_Drive Needle = {	.NAME = "NEEDLE",
+							.STEPS = 200,
+							.RESOLUTION = HALF_STEP,
+							.STEP_mm_RESOLUTION = 0.005,
+							.PORT_DIR = DIR_NEEDLE_GPIO_Port,
+							.PIN_DIR = DIR_NEEDLE_Pin,
+							.PORT_ENABLE = ENABLE_NEEDLE_GPIO_Port,
+							.PIN_ENABLE = ENABLE_NEEDLE_Pin,
+							.PORT_MS1 = MS1_NEEDLE_GPIO_Port,
+							.PIN_MS1 = MS1_NEEDLE_Pin,
+							.PORT_MS2 = MS2_NEEDLE_GPIO_Port,
+							.PIN_MS2 = MS2_NEEDLE_Pin,
+							.PORT_MS3 = MS3_NEEDLE_GPIO_Port,
+							.PIN_MS3 = MS3_NEEDLE_Pin,
+							.PORT_RESET = RESET_NEEDLE_GPIO_Port,
+							.PIN_RESET = RESET_NEEDLE_Pin,
+							.PORT_SLEEP = SLEEP_NEEDLE_GPIO_Port,
+							.PIN_SLEEP = SLEEP_NEEDLE_Pin,
+							.TIM_STEP = &htim4,
+							.TIM_STEP_CHANNEL = TIM_CHANNEL_1,
+							.TIM_COUNTER_SLAVE = &htim5
+							};
+	//
+	// Distance Sensors
+	//
+	VL6180X_ Needle_sensor;
+	//
+	// Queue info
+	//
+	Needle_info _Needle_info;
+	//
+	// Initialization
+	//
+	Init_A4988(&Needle); // Drive initialization
+
+	osMutexAcquire(MutexI2C2Handle, osWaitForever);
+	VL6180X_Init(&Needle_sensor, &hi2c2); // Sensor initialization
+	configureDefault_VL6180X(&Needle_sensor); // Sensor initialization
+	osMutexRelease(MutexI2C2Handle);
+
+	osMutexAcquire(MutexI2C2Handle, osWaitForever);
+	_Needle_info.MEASURE_Needle = readRangeSingleMillimeters_VL6180X(&Needle_sensor); // Initial measurement
+	_Needle_info.Set_distance_needle = _Needle_info.MEASURE_Needle;
+	osMutexRelease(MutexI2C2Handle);
+
+	//
+	// Timers
+	//
+	osTimerStart(NeedleInfoTimerOLEDHandle, (550 * osKernelGetTickFreq()) / 1000 ); // OLED Timer
+	osTimerStart(NeedleInfoTimerCommunicationHandle, (550 * osKernelGetTickFreq()) / 1000 ); // Communication Timer
+  /* Infinite loop */
+  for(;;)
+  {
+	  // Get SetPoint
+	  	  	  // TODO
+
+	  //
+	  // Read measurement from sensor
+	  //
+	  osMutexAcquire(MutexI2C2Handle, osWaitForever);
+	  _Needle_info.MEASURE_Needle = readRangeSingleMillimeters_VL6180X(&Needle_sensor); // Measurement
+	  osMutexRelease(MutexI2C2Handle);
+
+	  //
+	  // Send data to queue
+	  //
+	  if (osOK == osSemaphoreAcquire(NeedleInfoCommunicationSemaphoreHandle, 0)){ // Send to communication
+		  osMessageQueuePut(QueueNeedleInfoCommunicationHandle, &_Needle_info, 0, osWaitForever);
+	  }
+	  if (osOK == osSemaphoreAcquire(NeedleInfoOLEDSemaphoreHandle, 0)) { // Send to OLED
+		  osMessageQueuePut(QueueNeedleInfoOLEDHandle, &_Needle_info, 0, osWaitForever);
+	  }
+
+	  //
+	  // Control algorithm
+	  //
+	  	  // TODO implement
+
+	  // Time interval
+	  osDelay((200 * osKernelGetTickFreq()) / 1000);
+  }
+  /* USER CODE END StartNeedleControlTask */
+}
+
+/* USER CODE BEGIN Header_StartCommunicationTask */
+/**
+* @brief Function implementing the CommunicationTa thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartCommunicationTask */
+void StartCommunicationTask(void *argument)
+{
+  /* USER CODE BEGIN StartCommunicationTask */
+	//Receive data
+
+	HAL_UART_Receive_IT(&huart3, Buffor_Rx_USART, 4);
+
+	// Info data initialization
+	Syringe_info _Syringe_info;
+	Needle_info _Needle_info;
+	Temperature_info _Temperature_info;
+	_Needle_info.Set_distance_needle = 0;
+	_Needle_info.MEASURE_Needle = 0;
+	_Syringe_info.Set_distance_syringe = 0;
+	_Syringe_info.MEASURE_Syringe = 0;
+	_Temperature_info.Fan_info = 0;
+	_Temperature_info.Temperature = 0;
+  /* Infinite loop */
+  for(;;)
+  {
+	  //
+	  // Get data
+	  //
+	  // Get data from Syringe info queue
+	  osMessageQueueGet(QueueSyringeInfoCommunicationHandle, &_Syringe_info, NULL, 0);
+	  // Get data from Needle info queue
+	  osMessageQueueGet(QueueNeedleInfoCommunicationHandle, &_Needle_info, NULL, 0);
+	  // Get data from Temperature info queue
+	  osMessageQueueGet(QueueTemperatureCommunicationHandle, &_Temperature_info, NULL, 0);
+
+	  //
+	  // Send message
+	  //
+	  printf("{\"NP\":%d,\"SP\":%d,\"NS\":%d,\"SS\":%d,\"TM\":%.1f,\"FN\":%d,\"ST\":%d}\n\r",_Needle_info.MEASURE_Needle,
+			  _Syringe_info.MEASURE_Syringe,_Needle_info.Set_distance_needle,_Syringe_info.Set_distance_syringe,_Temperature_info.Temperature,
+			  _Temperature_info.Fan_info,0);
+
+	  // Time interval
+	  osDelay((500 * osKernelGetTickFreq()) / 1000);
+  }
+  /* USER CODE END StartCommunicationTask */
+}
+
+/* USER CODE BEGIN Header_StartTemperatureTask */
+/**
+* @brief Function implementing the TemperatureTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartTemperatureTask */
+void StartTemperatureTask(void *argument)
+{
+  /* USER CODE BEGIN StartTemperatureTask */
+  /* Infinite loop */
+  for(;;)
+  {
+	  // Time interval
+	  osDelay((1000 * osKernelGetTickFreq()) / 1000);
+  }
+  /* USER CODE END StartTemperatureTask */
+}
+
+/* SyringeInfoTimerOLEDCallback function */
+void SyringeInfoTimerOLEDCallback(void *argument)
+{
+  /* USER CODE BEGIN SyringeInfoTimerOLEDCallback */
+	osSemaphoreRelease(SyringeInfoOLEDSemaphoreHandle);
+  /* USER CODE END SyringeInfoTimerOLEDCallback */
+}
+
+/* NeedleInfoTimerOLEDCallback function */
+void NeedleInfoTimerOLEDCallback(void *argument)
+{
+  /* USER CODE BEGIN NeedleInfoTimerOLEDCallback */
+	osSemaphoreRelease(NeedleInfoOLEDSemaphoreHandle);
+  /* USER CODE END NeedleInfoTimerOLEDCallback */
+}
+
+/* SyringeInfoTimerCommunicationCallback function */
+void SyringeInfoTimerCommunicationCallback(void *argument)
+{
+  /* USER CODE BEGIN SyringeInfoTimerCommunicationCallback */
+	osSemaphoreRelease(SyringeInfoCommunicationSemaphoreHandle);
+  /* USER CODE END SyringeInfoTimerCommunicationCallback */
+}
+
+/* NeedleInfoTimerCommunicationCallback function */
+void NeedleInfoTimerCommunicationCallback(void *argument)
+{
+  /* USER CODE BEGIN NeedleInfoTimerCommunicationCallback */
+	osSemaphoreRelease(NeedleInfoCommunicationSemaphoreHandle);
+  /* USER CODE END NeedleInfoTimerCommunicationCallback */
 }
 
 /* Private application code --------------------------------------------------*/
@@ -419,6 +751,23 @@ void _putchar(char character)
 	osMutexAcquire(MutexPrintfHandle, osWaitForever);
 	HAL_UART_Transmit(&huart3, (uint8_t*)&character, 1, 1000);
 	osMutexRelease(MutexPrintfHandle);
+}
+//
+// Communication interface
+//
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
+	if(huart->Instance == USART3)
+	{
+		// Start of handling message
+		HAL_GPIO_TogglePin(LD3_GPIO_Port, LD3_Pin);
+		//
+		// Handling the message
+		//
+			// TODO implement
+
+		// Listening setup
+		HAL_UART_Receive_IT(&huart3, Buffor_Rx_USART, 4);
+	}
 }
 /* USER CODE END Application */
 
