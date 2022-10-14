@@ -41,6 +41,8 @@
 #include "usart.h"
 #include "i2c.h"
 #include "tim.h"
+// Standard library
+#include "stdlib.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -91,7 +93,9 @@ typedef struct{
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-
+//
+// Receive buffer
+//
 uint8_t Buffor_Rx_USART[4];
 
 /* USER CODE END Variables */
@@ -134,8 +138,8 @@ const osThreadAttr_t CommunicationTa_attributes = {
 osThreadId_t TemperatureTaskHandle;
 const osThreadAttr_t TemperatureTask_attributes = {
   .name = "TemperatureTask",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityHigh,
 };
 /* Definitions for QueueSyringeInfoOLED */
 osMessageQueueId_t QueueSyringeInfoOLEDHandle;
@@ -161,6 +165,31 @@ const osMessageQueueAttr_t QueueNeedleInfoCommunication_attributes = {
 osMessageQueueId_t QueueTemperatureCommunicationHandle;
 const osMessageQueueAttr_t QueueTemperatureCommunication_attributes = {
   .name = "QueueTemperatureCommunication"
+};
+/* Definitions for QueueNeedleSetPointCommunication */
+osMessageQueueId_t QueueNeedleSetPointCommunicationHandle;
+const osMessageQueueAttr_t QueueNeedleSetPointCommunication_attributes = {
+  .name = "QueueNeedleSetPointCommunication"
+};
+/* Definitions for QueueSyringeSetPointCommunication */
+osMessageQueueId_t QueueSyringeSetPointCommunicationHandle;
+const osMessageQueueAttr_t QueueSyringeSetPointCommunication_attributes = {
+  .name = "QueueSyringeSetPointCommunication"
+};
+/* Definitions for QueueSyringePermission */
+osMessageQueueId_t QueueSyringePermissionHandle;
+const osMessageQueueAttr_t QueueSyringePermission_attributes = {
+  .name = "QueueSyringePermission"
+};
+/* Definitions for QueueNeedlePermission */
+osMessageQueueId_t QueueNeedlePermissionHandle;
+const osMessageQueueAttr_t QueueNeedlePermission_attributes = {
+  .name = "QueueNeedlePermission"
+};
+/* Definitions for QueueCommunicationPermission */
+osMessageQueueId_t QueueCommunicationPermissionHandle;
+const osMessageQueueAttr_t QueueCommunicationPermission_attributes = {
+  .name = "QueueCommunicationPermission"
 };
 /* Definitions for SyringeInfoTimerOLED */
 osTimerId_t SyringeInfoTimerOLEDHandle;
@@ -320,6 +349,21 @@ void MX_FREERTOS_Init(void) {
   /* creation of QueueTemperatureCommunication */
   QueueTemperatureCommunicationHandle = osMessageQueueNew (4, sizeof(Temperature_info), &QueueTemperatureCommunication_attributes);
 
+  /* creation of QueueNeedleSetPointCommunication */
+  QueueNeedleSetPointCommunicationHandle = osMessageQueueNew (4, sizeof(uint16_t), &QueueNeedleSetPointCommunication_attributes);
+
+  /* creation of QueueSyringeSetPointCommunication */
+  QueueSyringeSetPointCommunicationHandle = osMessageQueueNew (4, sizeof(uint16_t), &QueueSyringeSetPointCommunication_attributes);
+
+  /* creation of QueueSyringePermission */
+  QueueSyringePermissionHandle = osMessageQueueNew (2, sizeof(uint8_t), &QueueSyringePermission_attributes);
+
+  /* creation of QueueNeedlePermission */
+  QueueNeedlePermissionHandle = osMessageQueueNew (2, sizeof(uint8_t), &QueueNeedlePermission_attributes);
+
+  /* creation of QueueCommunicationPermission */
+  QueueCommunicationPermissionHandle = osMessageQueueNew (2, sizeof(uint8_t), &QueueCommunicationPermission_attributes);
+
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
@@ -417,6 +461,9 @@ void StartSyringeControlTask(void *argument)
 	// Queue info
 	//
 	Syringe_info _Syringe_info;
+	uint16_t syringe_setpoint_change;
+	uint8_t _Permission;
+	_Permission = 0;
 	//
 	// Initialization
 	//
@@ -441,8 +488,15 @@ void StartSyringeControlTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
+	  //
+	  // Get data
+	  //
 	  // Get SetPoint
-	  	  // TODO
+	  if(osOK == osMessageQueueGet(QueueSyringeSetPointCommunicationHandle, &syringe_setpoint_change, NULL, 0)){
+		  _Syringe_info.Set_distance_syringe = syringe_setpoint_change;
+	  }
+	  // Get permission
+	  osMessageQueueGet(QueueSyringePermissionHandle, &_Permission, NULL, 0);
 
 	  //
 	  // Read measurement from sensor
@@ -464,9 +518,12 @@ void StartSyringeControlTask(void *argument)
 	  //
 	  // Control algorithm
 	  //
-	  // TODO implement
-
+	  if(_Permission == 1){
+	  	  // TODO implement
+	  }
+	  //
 	  // Time interval
+	  //
 	  osDelay((200 * osKernelGetTickFreq()) / 1000);
   }
   /* USER CODE END StartSyringeControlTask */
@@ -483,7 +540,9 @@ void StartSyringeControlTask(void *argument)
 void StartOLEDTask(void *argument)
 {
   /* USER CODE BEGIN StartOLEDTask */
-	// Variables
+	//
+	// Info data initialization
+	//
 	char Message_OLED[32]; // Message buffer
 	Syringe_info _Syringe_info;
 	Needle_info _Needle_info;
@@ -491,7 +550,10 @@ void StartOLEDTask(void *argument)
 	_Needle_info.MEASURE_Needle = 0;
 	_Syringe_info.Set_distance_syringe = 0;
 	_Syringe_info.MEASURE_Syringe = 0;
+
+	//
 	// Screen initialization
+	//
 	osMutexAcquire(MutexI2C4Handle, osWaitForever);
 	SSD1306_Init(&hi2c4);
 	osMutexRelease(MutexI2C4Handle);
@@ -534,12 +596,16 @@ void StartOLEDTask(void *argument)
 	  sprintf(Message_OLED, "Measure: %d mm", _Syringe_info.MEASURE_Syringe); //MEASURE_Syringe
 	  GFX_DrawString(0, 54, Message_OLED, WHITE, 0);
 
+	  //
 	  // Display
+	  //
 	  osMutexAcquire(MutexI2C4Handle, osWaitForever);
 	  SSD1306_Display();
 	  osMutexRelease(MutexI2C4Handle);
 
+	  //
 	  // Time interval
+	  //
 	  osDelay((500 * osKernelGetTickFreq()) / 1000);
   }
   /* USER CODE END StartOLEDTask */
@@ -584,25 +650,30 @@ void StartNeedleControlTask(void *argument)
 	//
 	// Distance Sensors
 	//
-	VL6180X_ Needle_sensor;
+//	VL6180X_ Needle_sensor;
 	//
 	// Queue info
 	//
 	Needle_info _Needle_info;
+	uint16_t needle_setpoint_change;
+	uint8_t _Permission;
+	_Needle_info.MEASURE_Needle = 10;
+	_Needle_info.Set_distance_needle = 20;
+	_Permission = 0;
 	//
 	// Initialization
 	//
 	Init_A4988(&Needle); // Drive initialization
 
-	osMutexAcquire(MutexI2C2Handle, osWaitForever);
-	VL6180X_Init(&Needle_sensor, &hi2c2); // Sensor initialization
-	configureDefault_VL6180X(&Needle_sensor); // Sensor initialization
-	osMutexRelease(MutexI2C2Handle);
+//	osMutexAcquire(MutexI2C2Handle, osWaitForever);
+//	VL6180X_Init(&Needle_sensor, &hi2c2); // Sensor initialization
+//	configureDefault_VL6180X(&Needle_sensor); // Sensor initialization
+//	osMutexRelease(MutexI2C2Handle);
 
-	osMutexAcquire(MutexI2C2Handle, osWaitForever);
-	_Needle_info.MEASURE_Needle = readRangeSingleMillimeters_VL6180X(&Needle_sensor); // Initial measurement
-	_Needle_info.Set_distance_needle = _Needle_info.MEASURE_Needle;
-	osMutexRelease(MutexI2C2Handle);
+//	osMutexAcquire(MutexI2C2Handle, osWaitForever);
+//	_Needle_info.MEASURE_Needle = readRangeSingleMillimeters_VL6180X(&Needle_sensor); // Initial measurement
+//	_Needle_info.Set_distance_needle = _Needle_info.MEASURE_Needle;
+//	osMutexRelease(MutexI2C2Handle);
 
 	//
 	// Timers
@@ -612,15 +683,22 @@ void StartNeedleControlTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
-	  // Get SetPoint
-	  	  	  // TODO
+	  //
+	  // Get Data
+	  //
+	  // Get set point
+	  if(osOK == osMessageQueueGet(QueueNeedleSetPointCommunicationHandle, &needle_setpoint_change, NULL, 0)){
+		  _Needle_info.Set_distance_needle = needle_setpoint_change;
+	  }
+	  // Get permission
+	  osMessageQueueGet(QueueNeedlePermissionHandle, &_Permission, NULL, 0);
 
 	  //
 	  // Read measurement from sensor
 	  //
-	  osMutexAcquire(MutexI2C2Handle, osWaitForever);
-	  _Needle_info.MEASURE_Needle = readRangeSingleMillimeters_VL6180X(&Needle_sensor); // Measurement
-	  osMutexRelease(MutexI2C2Handle);
+//	  osMutexAcquire(MutexI2C2Handle, osWaitForever);
+//	  _Needle_info.MEASURE_Needle = readRangeSingleMillimeters_VL6180X(&Needle_sensor); // Measurement
+//	  osMutexRelease(MutexI2C2Handle);
 
 	  //
 	  // Send data to queue
@@ -635,9 +713,12 @@ void StartNeedleControlTask(void *argument)
 	  //
 	  // Control algorithm
 	  //
+	  if(_Permission == 1){
 	  	  // TODO implement
-
+	  }
+	  //
 	  // Time interval
+	  //
 	  osDelay((200 * osKernelGetTickFreq()) / 1000);
   }
   /* USER CODE END StartNeedleControlTask */
@@ -653,20 +734,26 @@ void StartNeedleControlTask(void *argument)
 void StartCommunicationTask(void *argument)
 {
   /* USER CODE BEGIN StartCommunicationTask */
+	//
 	//Receive data
-
+	//
 	HAL_UART_Receive_IT(&huart3, Buffor_Rx_USART, 4);
 
+	//
 	// Info data initialization
+	//
 	Syringe_info _Syringe_info;
 	Needle_info _Needle_info;
 	Temperature_info _Temperature_info;
+	uint8_t _Permission;
 	_Needle_info.Set_distance_needle = 0;
 	_Needle_info.MEASURE_Needle = 0;
 	_Syringe_info.Set_distance_syringe = 0;
 	_Syringe_info.MEASURE_Syringe = 0;
 	_Temperature_info.Fan_info = 0;
 	_Temperature_info.Temperature = 0;
+	_Permission = 0;
+
   /* Infinite loop */
   for(;;)
   {
@@ -679,15 +766,21 @@ void StartCommunicationTask(void *argument)
 	  osMessageQueueGet(QueueNeedleInfoCommunicationHandle, &_Needle_info, NULL, 0);
 	  // Get data from Temperature info queue
 	  osMessageQueueGet(QueueTemperatureCommunicationHandle, &_Temperature_info, NULL, 0);
+	  // Get permission
+	  osMessageQueueGet(QueueCommunicationPermissionHandle, &_Permission, NULL, 0);
 
 	  //
 	  // Send message
 	  //
-	  printf("{\"NP\":%d,\"SP\":%d,\"NS\":%d,\"SS\":%d,\"TM\":%.1f,\"FN\":%d,\"ST\":%d}\n\r",_Needle_info.MEASURE_Needle,
-			  _Syringe_info.MEASURE_Syringe,_Needle_info.Set_distance_needle,_Syringe_info.Set_distance_syringe,_Temperature_info.Temperature,
-			  _Temperature_info.Fan_info,0);
+	  if(_Permission == 1){
+		  printf("{\"NP\":%d,\"SP\":%d,\"NS\":%d,\"SS\":%d,\"TM\":%.1f,\"FN\":%d,\"ST\":%d}\n\r",_Needle_info.MEASURE_Needle,
+				  _Syringe_info.MEASURE_Syringe,_Needle_info.Set_distance_needle,_Syringe_info.Set_distance_syringe,_Temperature_info.Temperature,
+				  _Temperature_info.Fan_info,0);
+	  }
 
+	  //
 	  // Time interval
+	  //
 	  osDelay((500 * osKernelGetTickFreq()) / 1000);
   }
   /* USER CODE END StartCommunicationTask */
@@ -703,10 +796,56 @@ void StartCommunicationTask(void *argument)
 void StartTemperatureTask(void *argument)
 {
   /* USER CODE BEGIN StartTemperatureTask */
-  /* Infinite loop */
+	//
+	// Info data initialization
+	//
+	Temperature_info _Temperature_info;
+	_Temperature_info.Fan_info = 0;
+	_Temperature_info.Temperature = 10;
+
+	//
+	// Initialize the sensor
+	//
+	osMutexAcquire(MutexI2C2Handle, osWaitForever);
+	BMP280_Init(&hi2c2, BMP280_TEMPERATURE_16BIT, BMP280_STANDARD, BMP280_FORCEDMODE);
+	osMutexRelease(MutexI2C2Handle);
+
+	//
+	// Initial measurement
+	//
+	osMutexAcquire(MutexI2C2Handle, osWaitForever);
+	_Temperature_info.Temperature = BMP280_ReadTemperature();
+	osMutexRelease(MutexI2C2Handle);
+
+	/* Infinite loop */
   for(;;)
   {
+	  //
+	  // Measurement
+	  //
+	  osMutexAcquire(MutexI2C2Handle, osWaitForever);
+	  _Temperature_info.Temperature = BMP280_ReadTemperature();
+	  osMutexRelease(MutexI2C2Handle);
+
+	  //
+	  // Fan functioning
+	  //
+	  if (_Temperature_info.Temperature >= 31.0) {
+		//TODO Turn on fan
+		  _Temperature_info.Fan_info = 1;
+	  }else{
+		  // TODO turn OFF fan
+		  _Temperature_info.Fan_info = 0;
+	  }
+
+	  //
+	  // Send to queue
+	  //
+	  osMessageQueuePut(QueueTemperatureCommunicationHandle, &_Temperature_info, 0, osWaitForever);
+
+	  //
 	  // Time interval
+	  //
 	  osDelay((1000 * osKernelGetTickFreq()) / 1000);
   }
   /* USER CODE END StartTemperatureTask */
@@ -758,14 +897,53 @@ void _putchar(char character)
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 	if(huart->Instance == USART3)
 	{
+		//
 		// Start of handling message
+		//
 		HAL_GPIO_TogglePin(LD3_GPIO_Port, LD3_Pin);
+
 		//
 		// Handling the message
 		//
-			// TODO implement
+		if(Buffor_Rx_USART[0] == 'N'){ // Needle set position
+			uint16_t needle_set_point_change;
+			char needle_set_point_change_str[3];
+			// Convert to uint16_t
+			needle_set_point_change_str[0] = Buffor_Rx_USART[1];
+			needle_set_point_change_str[1] = Buffor_Rx_USART[2];
+			needle_set_point_change_str[2] = Buffor_Rx_USART[3];
+			needle_set_point_change =  (uint16_t)atoi(needle_set_point_change_str);
+			// Send to queue
+			osMessageQueuePut(QueueNeedleSetPointCommunicationHandle, &needle_set_point_change, 0, 0U);
+		}else if (Buffor_Rx_USART[0] == 'S') { // Syringe set position
+			uint16_t syringe_set_point_change;
+			char syringe_set_point_change_str[3];
+			syringe_set_point_change_str[0] = Buffor_Rx_USART[1];
+			syringe_set_point_change_str[1] = Buffor_Rx_USART[2];
+			syringe_set_point_change_str[2] = Buffor_Rx_USART[3];
+			syringe_set_point_change =  (uint16_t)atoi(syringe_set_point_change_str);
+			// Send to queue
+			osMessageQueuePut(QueueSyringeSetPointCommunicationHandle, &syringe_set_point_change, 0, 0U);
+		}else if (Buffor_Rx_USART[0] == 'T') { // Test connection
+			printf("T");
+		}else if (Buffor_Rx_USART[0] == 'O') { // Start
+			uint8_t permission = 1;
+			osMessageQueuePut(QueueNeedlePermissionHandle, &permission, 0, 0U);
+			osMessageQueuePut(QueueSyringePermissionHandle, &permission, 0, 0U);
+			osMessageQueuePut(QueueCommunicationPermissionHandle, &permission, 0, 0U);
+		}else if (Buffor_Rx_USART[0] == 'E') { // STOP
+			uint8_t permission = 0;
+			osMessageQueuePut(QueueNeedlePermissionHandle, &permission, 0, 0U);
+			osMessageQueuePut(QueueSyringePermissionHandle, &permission, 0, 0U);
+			osMessageQueuePut(QueueCommunicationPermissionHandle, &permission, 0, 0U);
+		}else if (Buffor_Rx_USART[0] == 'R') {
+			uint8_t permission = 0;
+			osMessageQueuePut(QueueCommunicationPermissionHandle, &permission, 0, 0U);
+		}
 
+		//
 		// Listening setup
+		//
 		HAL_UART_Receive_IT(&huart3, Buffor_Rx_USART, 4);
 	}
 }
