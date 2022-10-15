@@ -10,6 +10,8 @@
 
 #define SSD1306_ADDRESS (0x3C)
 
+//#define SSD1306_USE_FREERTOS
+
 #define SSD1306_TIMEOUT 1000
 
 //

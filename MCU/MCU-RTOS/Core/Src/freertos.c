@@ -97,7 +97,10 @@ typedef struct{
 // Receive buffer
 //
 uint8_t Buffor_Rx_USART[4];
-
+//
+// Idle time
+//
+uint32_t IdleTicks;
 /* USER CODE END Variables */
 /* Definitions for HeartBeatTast */
 osThreadId_t HeartBeatTastHandle;
@@ -211,6 +214,11 @@ osTimerId_t NeedleInfoTimerCommunicationHandle;
 const osTimerAttr_t NeedleInfoTimerCommunication_attributes = {
   .name = "NeedleInfoTimerCommunication"
 };
+/* Definitions for IDLETimeTimer */
+osTimerId_t IDLETimeTimerHandle;
+const osTimerAttr_t IDLETimeTimer_attributes = {
+  .name = "IDLETimeTimer"
+};
 /* Definitions for MutexPrintf */
 osMutexId_t MutexPrintfHandle;
 const osMutexAttr_t MutexPrintf_attributes = {
@@ -270,8 +278,34 @@ void SyringeInfoTimerOLEDCallback(void *argument);
 void NeedleInfoTimerOLEDCallback(void *argument);
 void SyringeInfoTimerCommunicationCallback(void *argument);
 void NeedleInfoTimerCommunicationCallback(void *argument);
+void IDLETimeTimerCallback(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
+
+/* Hook prototypes */
+void vApplicationIdleHook(void);
+
+/* USER CODE BEGIN 2 */
+void vApplicationIdleHook( void )
+{
+   /* vApplicationIdleHook() will only be called if configUSE_IDLE_HOOK is set
+   to 1 in FreeRTOSConfig.h. It will be called on each iteration of the idle
+   task. It is essential that code added to this hook function never attempts
+   to block in any way (for example, call xQueueReceive() with a block time
+   specified, or call vTaskDelay()). If the application makes use of the
+   vTaskDelete() API function (as this demo application does) then it is also
+   important that vApplicationIdleHook() is permitted to return to its calling
+   function, because it is the responsibility of the idle task to clean up
+   memory allocated by the kernel to any task that has since been deleted. */
+
+	static uint32_t LastTick;
+
+	if(LastTick < osKernelGetTickCount()){
+		IdleTicks++;
+		LastTick = osKernelGetTickCount();
+	}
+}
+/* USER CODE END 2 */
 
 /**
   * @brief  FreeRTOS initialization
@@ -328,6 +362,9 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of NeedleInfoTimerCommunication */
   NeedleInfoTimerCommunicationHandle = osTimerNew(NeedleInfoTimerCommunicationCallback, osTimerPeriodic, NULL, &NeedleInfoTimerCommunication_attributes);
+
+  /* creation of IDLETimeTimer */
+  IDLETimeTimerHandle = osTimerNew(IDLETimeTimerCallback, osTimerPeriodic, NULL, &IDLETimeTimer_attributes);
 
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
@@ -408,6 +445,7 @@ void MX_FREERTOS_Init(void) {
 void StartHeartBeatTast(void *argument)
 {
   /* USER CODE BEGIN StartHeartBeatTast */
+	osTimerStart(IDLETimeTimerHandle, 1000);
   /* Infinite loop */
   for(;;)
   {
@@ -735,6 +773,11 @@ void StartCommunicationTask(void *argument)
 {
   /* USER CODE BEGIN StartCommunicationTask */
 	//
+	// Time interval
+	//
+	uint32_t DelayTick = osKernelGetTickCount();
+
+	//
 	//Receive data
 	//
 	HAL_UART_Receive_IT(&huart3, Buffor_Rx_USART, 4);
@@ -781,7 +824,9 @@ void StartCommunicationTask(void *argument)
 	  //
 	  // Time interval
 	  //
-	  osDelay((500 * osKernelGetTickFreq()) / 1000);
+	  DelayTick += 500;
+	  osDelayUntil(DelayTick);
+//	  osDelay((500 * osKernelGetTickFreq()) / 1000);
   }
   /* USER CODE END StartCommunicationTask */
 }
@@ -826,7 +871,9 @@ void StartTemperatureTask(void *argument)
 	  osMutexAcquire(MutexI2C2Handle, osWaitForever);
 	  _Temperature_info.Temperature = BMP280_ReadTemperature();
 	  osMutexRelease(MutexI2C2Handle);
-
+	  	  	  	  /////////////////////////////////////////////////////////////
+	  	  	  	  printf("Temp: %.2f\n\r",_Temperature_info.Temperature); // TODO delete
+	  	  	  	  /////////////////////////////////////////////////////////////
 	  //
 	  // Fan functioning
 	  //
@@ -883,8 +930,22 @@ void NeedleInfoTimerCommunicationCallback(void *argument)
   /* USER CODE END NeedleInfoTimerCommunicationCallback */
 }
 
+/* IDLETimeTimerCallback function */
+void IDLETimeTimerCallback(void *argument)
+{
+  /* USER CODE BEGIN IDLETimeTimerCallback */
+	uint32_t IdleTime;
+	IdleTime = (IdleTicks * 100) / 1000;
+	IdleTicks = 0;
+	printf("IdleTime: %d\n\r",IdleTime); // TODO delete
+  /* USER CODE END IDLETimeTimerCallback */
+}
+
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
+//
+// Printf function implementation
+//
 void _putchar(char character)
 {
 	osMutexAcquire(MutexPrintfHandle, osWaitForever);
@@ -918,6 +979,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 		}else if (Buffor_Rx_USART[0] == 'S') { // Syringe set position
 			uint16_t syringe_set_point_change;
 			char syringe_set_point_change_str[3];
+			// Convert to uint16_t
 			syringe_set_point_change_str[0] = Buffor_Rx_USART[1];
 			syringe_set_point_change_str[1] = Buffor_Rx_USART[2];
 			syringe_set_point_change_str[2] = Buffor_Rx_USART[3];
@@ -945,6 +1007,24 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 		// Listening setup
 		//
 		HAL_UART_Receive_IT(&huart3, Buffor_Rx_USART, 4);
+	}
+}
+//
+// Safety interlock (limit switch)
+//
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
+	if(GPIO_Pin == END_STOP_SYRINGE_1_Pin){ // END STOP Syringe Near Drive
+		uint16_t syringe_set_point_change = 120; // TODO change the stop point
+		osMessageQueuePut(QueueSyringeSetPointCommunicationHandle, &syringe_set_point_change, 0, 0U);
+	}else if (GPIO_Pin == END_STOP_SYRINGE_2_Pin){ // END STOP Syringe Near Syringe
+		uint16_t syringe_set_point_change = 20; // TODO change the stop point
+		osMessageQueuePut(QueueSyringeSetPointCommunicationHandle, &syringe_set_point_change, 0, 0U);
+	}else if(GPIO_Pin == END_STOP_NEEDLE_1_Pin){ // END STOP Needle Near Drive
+		uint16_t needle_set_point_change = 120; // TODO change the stop point
+		osMessageQueuePut(QueueNeedleSetPointCommunicationHandle, &needle_set_point_change, 0, 0U);
+	}else if(GPIO_Pin == END_STOP_NEEDLE_2_Pin){ // END STOP Needle Near Needle
+		uint16_t needle_set_point_change = 20; // TODO change the stop point
+		osMessageQueuePut(QueueNeedleSetPointCommunicationHandle, &needle_set_point_change, 0, 0U);
 	}
 }
 /* USER CODE END Application */
