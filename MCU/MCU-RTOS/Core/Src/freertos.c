@@ -134,7 +134,7 @@ const osThreadAttr_t NeedleControlTa_attributes = {
 osThreadId_t CommunicationTaHandle;
 const osThreadAttr_t CommunicationTa_attributes = {
   .name = "CommunicationTa",
-  .stack_size = 256 * 4,
+  .stack_size = 600 * 4,
   .priority = (osPriority_t) osPriorityHigh,
 };
 /* Definitions for TemperatureTask */
@@ -142,7 +142,7 @@ osThreadId_t TemperatureTaskHandle;
 const osThreadAttr_t TemperatureTask_attributes = {
   .name = "TemperatureTask",
   .stack_size = 256 * 4,
-  .priority = (osPriority_t) osPriorityHigh,
+  .priority = (osPriority_t) osPriorityHigh2,
 };
 /* Definitions for QueueSyringeInfoOLED */
 osMessageQueueId_t QueueSyringeInfoOLEDHandle;
@@ -816,7 +816,7 @@ void StartCommunicationTask(void *argument)
 	  // Send message
 	  //
 	  if(_Permission == 1){
-		  printf("{\"NP\":%d,\"SP\":%d,\"NS\":%d,\"SS\":%d,\"TM\":%.1f,\"FN\":%d,\"ST\":%d}\n\r",_Needle_info.MEASURE_Needle,
+		  printf("{\"NP\":%d,\"SP\":%d,\"NS\":%d,\"SS\":%d,\"TM\":%.1f,\"FN\":%d,\"ST\":%d}\r\n",_Needle_info.MEASURE_Needle,
 				  _Syringe_info.MEASURE_Syringe,_Needle_info.Set_distance_needle,_Syringe_info.Set_distance_syringe,_Temperature_info.Temperature,
 				  _Temperature_info.Fan_info,0);
 	  }
@@ -871,9 +871,6 @@ void StartTemperatureTask(void *argument)
 	  osMutexAcquire(MutexI2C2Handle, osWaitForever);
 	  _Temperature_info.Temperature = BMP280_ReadTemperature();
 	  osMutexRelease(MutexI2C2Handle);
-	  	  	  	  /////////////////////////////////////////////////////////////
-	  	  	  	  printf("Temp: %.2f\n\r",_Temperature_info.Temperature); // TODO delete
-	  	  	  	  /////////////////////////////////////////////////////////////
 	  //
 	  // Fan functioning
 	  //
@@ -937,7 +934,7 @@ void IDLETimeTimerCallback(void *argument)
 	uint32_t IdleTime;
 	IdleTime = (IdleTicks * 100) / 1000;
 	IdleTicks = 0;
-	printf("IdleTime: %d\n\r",IdleTime); // TODO delete
+//	printf("IdleTime: %d\n\r",IdleTime); // TODO delete
   /* USER CODE END IDLETimeTimerCallback */
 }
 

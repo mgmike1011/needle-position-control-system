@@ -1,10 +1,10 @@
-18:32:26 **** Incremental Build of configuration Debug for project MCU-RTOS ****
+17:17:52 **** Incremental Build of configuration Debug for project MCU-RTOS ****
 make -j12 all 
 arm-none-eabi-size   MCU-RTOS.elf 
    text	   data	    bss	    dec	    hex	filename
-  62720	    128	  39032	 101880	  18df8	MCU-RTOS.elf
+  62656	    128	  39032	 101816	  18db8	MCU-RTOS.elf
 Finished building: default.size.stdout
  
 
-18:32:26 Build Finished. 0 errors, 0 warnings. (took 354ms)
+17:17:52 Build Finished. 0 errors, 0 warnings. (took 363ms)
 
