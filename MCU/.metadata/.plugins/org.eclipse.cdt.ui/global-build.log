@@ -1,9 +1,9 @@
-17:17:37 **** Incremental Build of configuration Debug for project MCU-RTOS ****
+15:27:06 **** Incremental Build of configuration Debug for project MCU-RTOS ****
 make -j12 all 
 arm-none-eabi-gcc "../Core/Src/freertos.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/freertos.d" -MT"Core/Src/freertos.o" --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/freertos.o"
 ../Core/Src/freertos.c: In function 'IDLETimeTimerCallback':
-../Core/Src/freertos.c:934:11: warning: variable 'IdleTime' set but not used [-Wunused-but-set-variable]
-  934 |  uint32_t IdleTime;
+../Core/Src/freertos.c:950:11: warning: variable 'IdleTime' set but not used [-Wunused-but-set-variable]
+  950 |  uint32_t IdleTime;
       |           ^~~~~~~~
 arm-none-eabi-gcc -o "MCU-RTOS.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\mgmil\Documents\needle-position-control-system\MCU\MCU-RTOS\STM32F746ZGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="MCU-RTOS.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 Finished building target: MCU-RTOS.elf
@@ -11,15 +11,15 @@ Finished building target: MCU-RTOS.elf
 arm-none-eabi-size   MCU-RTOS.elf 
 arm-none-eabi-objdump -h -S  MCU-RTOS.elf  > "MCU-RTOS.list"
    text	   data	    bss	    dec	    hex	filename
-  62656	    128	  39032	 101816	  18db8	MCU-RTOS.elf
+  62840	    128	  39032	 102000	  18e70	MCU-RTOS.elf
 Finished building: default.size.stdout
  
 Finished building: MCU-RTOS.list
  
-17:17:52 **** Incremental Build of configuration Debug for project MCU-RTOS ****
+15:27:11 **** Incremental Build of configuration Debug for project MCU-RTOS ****
 make -j12 all 
 arm-none-eabi-size   MCU-RTOS.elf 
    text	   data	    bss	    dec	    hex	filename
-  62656	    128	  39032	 101816	  18db8	MCU-RTOS.elf
+  62840	    128	  39032	 102000	  18e70	MCU-RTOS.elf
 Finished building: default.size.stdout
  

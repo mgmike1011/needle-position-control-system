@@ -19,4 +19,5 @@ Komunikaty:
 	T - communication test
 	O - ON 
 	E - STOP
+	R - reset communication
 	

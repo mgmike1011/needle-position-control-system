@@ -120,7 +120,7 @@ const osThreadAttr_t SyringeControlT_attributes = {
 osThreadId_t OLEDTaskHandle;
 const osThreadAttr_t OLEDTask_attributes = {
   .name = "OLEDTask",
-  .stack_size = 256 * 4,
+  .stack_size = 512 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* Definitions for NeedleControlTa */
@@ -134,7 +134,7 @@ const osThreadAttr_t NeedleControlTa_attributes = {
 osThreadId_t CommunicationTaHandle;
 const osThreadAttr_t CommunicationTa_attributes = {
   .name = "CommunicationTa",
-  .stack_size = 600 * 4,
+  .stack_size = 512 * 4,
   .priority = (osPriority_t) osPriorityHigh,
 };
 /* Definitions for TemperatureTask */
@@ -142,7 +142,7 @@ osThreadId_t TemperatureTaskHandle;
 const osThreadAttr_t TemperatureTask_attributes = {
   .name = "TemperatureTask",
   .stack_size = 256 * 4,
-  .priority = (osPriority_t) osPriorityHigh2,
+  .priority = (osPriority_t) osPriorityRealtime7,
 };
 /* Definitions for QueueSyringeInfoOLED */
 osMessageQueueId_t QueueSyringeInfoOLEDHandle;
@@ -219,6 +219,11 @@ osTimerId_t IDLETimeTimerHandle;
 const osTimerAttr_t IDLETimeTimer_attributes = {
   .name = "IDLETimeTimer"
 };
+/* Definitions for TemperatureInfoCommunicationTimer */
+osTimerId_t TemperatureInfoCommunicationTimerHandle;
+const osTimerAttr_t TemperatureInfoCommunicationTimer_attributes = {
+  .name = "TemperatureInfoCommunicationTimer"
+};
 /* Definitions for MutexPrintf */
 osMutexId_t MutexPrintfHandle;
 const osMutexAttr_t MutexPrintf_attributes = {
@@ -279,6 +284,7 @@ void NeedleInfoTimerOLEDCallback(void *argument);
 void SyringeInfoTimerCommunicationCallback(void *argument);
 void NeedleInfoTimerCommunicationCallback(void *argument);
 void IDLETimeTimerCallback(void *argument);
+void TemperatureInfoCommunicationTimerCallback(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -365,6 +371,9 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of IDLETimeTimer */
   IDLETimeTimerHandle = osTimerNew(IDLETimeTimerCallback, osTimerPeriodic, NULL, &IDLETimeTimer_attributes);
+
+  /* creation of TemperatureInfoCommunicationTimer */
+  TemperatureInfoCommunicationTimerHandle = osTimerNew(TemperatureInfoCommunicationTimerCallback, osTimerPeriodic, NULL, &TemperatureInfoCommunicationTimer_attributes);
 
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
@@ -862,6 +871,11 @@ void StartTemperatureTask(void *argument)
 	_Temperature_info.Temperature = BMP280_ReadTemperature();
 	osMutexRelease(MutexI2C2Handle);
 
+	//
+	// Timer start
+	//
+	osTimerStart(TemperatureInfoCommunicationTimerHandle, (1000 * osKernelGetTickFreq()) / 1000 ); // Communication Timer
+
 	/* Infinite loop */
   for(;;)
   {
@@ -885,7 +899,9 @@ void StartTemperatureTask(void *argument)
 	  //
 	  // Send to queue
 	  //
-	  osMessageQueuePut(QueueTemperatureCommunicationHandle, &_Temperature_info, 0, osWaitForever);
+	  if(osOK == osSemaphoreAcquire(TemperatureInfoCommunicationSemaphoreHandle, 0)){
+		  osMessageQueuePut(QueueTemperatureCommunicationHandle, &_Temperature_info, 0, osWaitForever);
+	  }
 
 	  //
 	  // Time interval
@@ -936,6 +952,14 @@ void IDLETimeTimerCallback(void *argument)
 	IdleTicks = 0;
 //	printf("IdleTime: %d\n\r",IdleTime); // TODO delete
   /* USER CODE END IDLETimeTimerCallback */
+}
+
+/* TemperatureInfoCommunicationTimerCallback function */
+void TemperatureInfoCommunicationTimerCallback(void *argument)
+{
+  /* USER CODE BEGIN TemperatureInfoCommunicationTimerCallback */
+	osSemaphoreRelease(TemperatureInfoCommunicationSemaphoreHandle);
+  /* USER CODE END TemperatureInfoCommunicationTimerCallback */
 }
 
 /* Private application code --------------------------------------------------*/
