@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Delete resource &apos;MCU-RTOS/Core/Inc/BMPXX80.h&apos;" deleteContents="false" description="Delete resource &apos;MCU-RTOS/Core/Inc/BMPXX80.h&apos;" element1="/MCU-RTOS/Core/Inc/BMPXX80.h" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1666622553643"/>&#x0A;<refactoring comment="Delete resource &apos;MCU-RTOS/Core/Src/BMXX80.c&apos;" deleteContents="false" description="Delete resource &apos;MCU-RTOS/Core/Src/BMXX80.c&apos;" element1="/MCU-RTOS/Core/Src/BMXX80.c" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1666622556632"/>
+</session>

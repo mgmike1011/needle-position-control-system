@@ -34,7 +34,7 @@
 #include "GFX_BW.h"
 #include "fonts/fonts.h"
 // Temperature sensor
-#include "BMPXX80.h"
+#include "bmp280.h"
 // printf external library
 #include "printf.h"
 // MCU libraries
@@ -142,7 +142,7 @@ osThreadId_t TemperatureTaskHandle;
 const osThreadAttr_t TemperatureTask_attributes = {
   .name = "TemperatureTask",
   .stack_size = 256 * 4,
-  .priority = (osPriority_t) osPriorityRealtime7,
+  .priority = (osPriority_t) osPriorityNormal1,
 };
 /* Definitions for QueueSyringeInfoOLED */
 osMessageQueueId_t QueueSyringeInfoOLEDHandle;
@@ -857,18 +857,20 @@ void StartTemperatureTask(void *argument)
 	_Temperature_info.Fan_info = 0;
 	_Temperature_info.Temperature = 10;
 
+	BMP280_t Bmp280;
+
 	//
 	// Initialize the sensor
 	//
 	osMutexAcquire(MutexI2C2Handle, osWaitForever);
-	BMP280_Init(&hi2c2, BMP280_TEMPERATURE_16BIT, BMP280_STANDARD, BMP280_FORCEDMODE);
+	BMP280_Init(&Bmp280, &hi2c2, 0x76);
 	osMutexRelease(MutexI2C2Handle);
 
 	//
 	// Initial measurement
 	//
 	osMutexAcquire(MutexI2C2Handle, osWaitForever);
-	_Temperature_info.Temperature = BMP280_ReadTemperature();
+	_Temperature_info.Temperature = BMP280_ReadTemperature(&Bmp280);
 	osMutexRelease(MutexI2C2Handle);
 
 	//
@@ -883,7 +885,10 @@ void StartTemperatureTask(void *argument)
 	  // Measurement
 	  //
 	  osMutexAcquire(MutexI2C2Handle, osWaitForever);
-	  _Temperature_info.Temperature = BMP280_ReadTemperature();
+	  _Temperature_info.Temperature = BMP280_ReadTemperature(&Bmp280);
+	  if(_Temperature_info.Temperature < 0 ){
+		  _Temperature_info.Temperature = BMP280_ReadTemperature(&Bmp280);
+	  }
 	  osMutexRelease(MutexI2C2Handle);
 	  //
 	  // Fan functioning
