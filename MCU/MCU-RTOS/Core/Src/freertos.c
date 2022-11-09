@@ -697,7 +697,7 @@ void StartNeedleControlTask(void *argument)
 	//
 	// Distance Sensors
 	//
-//	VL6180X_ Needle_sensor;
+	VL6180X_ Needle_sensor;
 	//
 	// Queue info
 	//
@@ -712,15 +712,15 @@ void StartNeedleControlTask(void *argument)
 	//
 	Init_A4988(&Needle); // Drive initialization
 
-//	osMutexAcquire(MutexI2C2Handle, osWaitForever);
-//	VL6180X_Init(&Needle_sensor, &hi2c2); // Sensor initialization
-//	configureDefault_VL6180X(&Needle_sensor); // Sensor initialization
-//	osMutexRelease(MutexI2C2Handle);
+	osMutexAcquire(MutexI2C2Handle, osWaitForever);
+	VL6180X_Init(&Needle_sensor, &hi2c2); // Sensor initialization
+	configureDefault_VL6180X(&Needle_sensor); // Sensor initialization
+	osMutexRelease(MutexI2C2Handle);
 
-//	osMutexAcquire(MutexI2C2Handle, osWaitForever);
-//	_Needle_info.MEASURE_Needle = readRangeSingleMillimeters_VL6180X(&Needle_sensor); // Initial measurement
-//	_Needle_info.Set_distance_needle = _Needle_info.MEASURE_Needle;
-//	osMutexRelease(MutexI2C2Handle);
+	osMutexAcquire(MutexI2C2Handle, osWaitForever);
+	_Needle_info.MEASURE_Needle = readRangeSingleMillimeters_VL6180X(&Needle_sensor); // Initial measurement
+	_Needle_info.Set_distance_needle = _Needle_info.MEASURE_Needle;
+	osMutexRelease(MutexI2C2Handle);
 
 	//
 	// Timers
@@ -743,9 +743,9 @@ void StartNeedleControlTask(void *argument)
 	  //
 	  // Read measurement from sensor
 	  //
-//	  osMutexAcquire(MutexI2C2Handle, osWaitForever);
-//	  _Needle_info.MEASURE_Needle = readRangeSingleMillimeters_VL6180X(&Needle_sensor); // Measurement
-//	  osMutexRelease(MutexI2C2Handle);
+	  osMutexAcquire(MutexI2C2Handle, osWaitForever);
+	  _Needle_info.MEASURE_Needle = readRangeSingleMillimeters_VL6180X(&Needle_sensor); // Measurement
+	  osMutexRelease(MutexI2C2Handle);
 
 	  //
 	  // Send data to queue
@@ -955,7 +955,7 @@ void IDLETimeTimerCallback(void *argument)
 	uint32_t IdleTime;
 	IdleTime = (IdleTicks * 100) / 1000;
 	IdleTicks = 0;
-//	printf("IdleTime: %d\n\r",IdleTime); // TODO delete
+	printf("IdleTime: %d\n\r",IdleTime); // TODO delete
   /* USER CODE END IDLETimeTimerCallback */
 }
 

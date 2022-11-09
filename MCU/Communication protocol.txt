@@ -7,7 +7,7 @@ NS - needle set position in mm
 SS - syringe set position in mm
 TM - temperature in C
 FN - Is fan on : 1 - ON, 0 - OFF
-ST - status : 0 - IDLE, 1 - STOP, 2 - needle control, 3 - syringe control, 4 - needle and syringe control 
+ST - status : 0 - OK, 1 - MOTOR STOP,  
 
 PC -> MCU
 Schemat:	YXXX
