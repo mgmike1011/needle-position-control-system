@@ -17,7 +17,10 @@ Komunikaty:
 	N - needle set position
 	S - syringe set position
 	T - communication test
-	O - ON 
-	E - STOP
-	R - reset communication
+	O - ON ALL
+	E - STOP ALL
+	R - STOP communication
+	M - STOP motors
+	Q - Needle speed in rpm
+	W - Syringe speed in rpm
 	

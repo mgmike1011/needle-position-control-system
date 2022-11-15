@@ -59,7 +59,7 @@ void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LD1_Pin|MS1_NEEDLE_Pin|ENABLE_NEEDLE_Pin|LD3_Pin
-                          |LD2_Pin|DIR_SYRINGE_Pin|ENABLE_SYRINGE_Pin, GPIO_PIN_RESET);
+                          |FAN_OUT_Pin|LD2_Pin|DIR_SYRINGE_Pin|ENABLE_SYRINGE_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOE, DIR_NEEDLE_Pin|SLEEP_NEEDLE_Pin|RESET_NEEDLE_Pin|MS3_NEEDLE_Pin
@@ -78,8 +78,8 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PBPin PBPin PBPin */
-  GPIO_InitStruct.Pin = LD1_Pin|LD3_Pin|LD2_Pin;
+  /*Configure GPIO pins : PBPin PBPin PBPin PBPin */
+  GPIO_InitStruct.Pin = LD1_Pin|LD3_Pin|FAN_OUT_Pin|LD2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

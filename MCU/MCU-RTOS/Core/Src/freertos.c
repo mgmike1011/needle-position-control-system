@@ -113,7 +113,7 @@ const osThreadAttr_t HeartBeatTast_attributes = {
 osThreadId_t SyringeControlTHandle;
 const osThreadAttr_t SyringeControlT_attributes = {
   .name = "SyringeControlT",
-  .stack_size = 512 * 4,
+  .stack_size = 640 * 4,
   .priority = (osPriority_t) osPriorityAboveNormal,
 };
 /* Definitions for OLEDTask */
@@ -127,7 +127,7 @@ const osThreadAttr_t OLEDTask_attributes = {
 osThreadId_t NeedleControlTaHandle;
 const osThreadAttr_t NeedleControlTa_attributes = {
   .name = "NeedleControlTa",
-  .stack_size = 512 * 4,
+  .stack_size = 640 * 4,
   .priority = (osPriority_t) osPriorityAboveNormal1,
 };
 /* Definitions for CommunicationTa */
@@ -193,6 +193,16 @@ const osMessageQueueAttr_t QueueNeedlePermission_attributes = {
 osMessageQueueId_t QueueCommunicationPermissionHandle;
 const osMessageQueueAttr_t QueueCommunicationPermission_attributes = {
   .name = "QueueCommunicationPermission"
+};
+/* Definitions for QueueSyringeSpeedRPM */
+osMessageQueueId_t QueueSyringeSpeedRPMHandle;
+const osMessageQueueAttr_t QueueSyringeSpeedRPM_attributes = {
+  .name = "QueueSyringeSpeedRPM"
+};
+/* Definitions for QueueNeedleSpeedRPM */
+osMessageQueueId_t QueueNeedleSpeedRPMHandle;
+const osMessageQueueAttr_t QueueNeedleSpeedRPM_attributes = {
+  .name = "QueueNeedleSpeedRPM"
 };
 /* Definitions for SyringeInfoTimerOLED */
 osTimerId_t SyringeInfoTimerOLEDHandle;
@@ -381,13 +391,13 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the queue(s) */
   /* creation of QueueSyringeInfoOLED */
-  QueueSyringeInfoOLEDHandle = osMessageQueueNew (8, sizeof(Syringe_info), &QueueSyringeInfoOLED_attributes);
+  QueueSyringeInfoOLEDHandle = osMessageQueueNew (4, sizeof(Syringe_info), &QueueSyringeInfoOLED_attributes);
 
   /* creation of QueueSyringeInfoCommunication */
   QueueSyringeInfoCommunicationHandle = osMessageQueueNew (2, sizeof(Syringe_info), &QueueSyringeInfoCommunication_attributes);
 
   /* creation of QueueNeedleInfoOLED */
-  QueueNeedleInfoOLEDHandle = osMessageQueueNew (8, sizeof(Needle_info), &QueueNeedleInfoOLED_attributes);
+  QueueNeedleInfoOLEDHandle = osMessageQueueNew (4, sizeof(Needle_info), &QueueNeedleInfoOLED_attributes);
 
   /* creation of QueueNeedleInfoCommunication */
   QueueNeedleInfoCommunicationHandle = osMessageQueueNew (4, sizeof(Needle_info), &QueueNeedleInfoCommunication_attributes);
@@ -409,6 +419,12 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of QueueCommunicationPermission */
   QueueCommunicationPermissionHandle = osMessageQueueNew (2, sizeof(uint8_t), &QueueCommunicationPermission_attributes);
+
+  /* creation of QueueSyringeSpeedRPM */
+  QueueSyringeSpeedRPMHandle = osMessageQueueNew (2, sizeof(uint16_t), &QueueSyringeSpeedRPM_attributes);
+
+  /* creation of QueueNeedleSpeedRPM */
+  QueueNeedleSpeedRPMHandle = osMessageQueueNew (2, sizeof(uint16_t), &QueueNeedleSpeedRPM_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
@@ -500,6 +516,7 @@ void StartSyringeControlTask(void *argument)
 							.TIM_STEP_CHANNEL = TIM_CHANNEL_1,
 							.TIM_COUNTER_SLAVE = &htim3
 							};
+	uint16_t Syringe_speed_rmp;
 	//
 	// Distance Sensors
 	//
@@ -515,6 +532,7 @@ void StartSyringeControlTask(void *argument)
 	// Initialization
 	//
 	Init_A4988(&Syringe); // Drive initialization
+	HAL_TIM_Base_Stop_IT(Syringe.TIM_COUNTER_SLAVE);
 
 	osMutexAcquire(MutexI2C4Handle, osWaitForever);
 	VL6180X_Init(&Syringe_sensor, &hi2c4); // Sensor initialization
@@ -544,6 +562,10 @@ void StartSyringeControlTask(void *argument)
 	  }
 	  // Get permission
 	  osMessageQueueGet(QueueSyringePermissionHandle, &_Permission, NULL, 0);
+	  // Get Speed in rpm
+	  if(osOK == osMessageQueueGet(QueueSyringeSpeedRPMHandle, &Syringe_speed_rmp, NULL, 0)){
+		  Set_Speed(&Syringe, Syringe_speed_rmp);
+	  }
 
 	  //
 	  // Read measurement from sensor
@@ -567,6 +589,7 @@ void StartSyringeControlTask(void *argument)
 	  //
 	  if(_Permission == 1){
 	  	  // TODO implement
+
 	  }
 	  //
 	  // Time interval
@@ -694,6 +717,7 @@ void StartNeedleControlTask(void *argument)
 							.TIM_STEP_CHANNEL = TIM_CHANNEL_1,
 							.TIM_COUNTER_SLAVE = &htim5
 							};
+	uint16_t Needle_speed_rmp;
 	//
 	// Distance Sensors
 	//
@@ -711,6 +735,7 @@ void StartNeedleControlTask(void *argument)
 	// Initialization
 	//
 	Init_A4988(&Needle); // Drive initialization
+	HAL_TIM_Base_Stop_IT(Needle.TIM_COUNTER_SLAVE);
 
 	osMutexAcquire(MutexI2C2Handle, osWaitForever);
 	VL6180X_Init(&Needle_sensor, &hi2c2); // Sensor initialization
@@ -739,6 +764,10 @@ void StartNeedleControlTask(void *argument)
 	  }
 	  // Get permission
 	  osMessageQueueGet(QueueNeedlePermissionHandle, &_Permission, NULL, 0);
+	  // Get Speed in rpm
+	  if(osOK == osMessageQueueGet(QueueNeedleSpeedRPMHandle, &Needle_speed_rmp, NULL, 0)){
+		  Set_Speed(&Needle, Needle_speed_rmp);
+	  }
 
 	  //
 	  // Read measurement from sensor
@@ -835,7 +864,6 @@ void StartCommunicationTask(void *argument)
 	  //
 	  DelayTick += 500;
 	  osDelayUntil(DelayTick);
-//	  osDelay((500 * osKernelGetTickFreq()) / 1000);
   }
   /* USER CODE END StartCommunicationTask */
 }
@@ -894,10 +922,10 @@ void StartTemperatureTask(void *argument)
 	  // Fan functioning
 	  //
 	  if (_Temperature_info.Temperature >= 31.0) {
-		//TODO Turn on fan
+		  HAL_GPIO_WritePin(FAN_OUT_GPIO_Port, FAN_OUT_Pin, GPIO_PIN_SET);
 		  _Temperature_info.Fan_info = 1;
 	  }else{
-		  // TODO turn OFF fan
+		  HAL_GPIO_WritePin(FAN_OUT_GPIO_Port, FAN_OUT_Pin, GPIO_PIN_RESET);
 		  _Temperature_info.Fan_info = 0;
 	  }
 
@@ -955,7 +983,7 @@ void IDLETimeTimerCallback(void *argument)
 	uint32_t IdleTime;
 	IdleTime = (IdleTicks * 100) / 1000;
 	IdleTicks = 0;
-	printf("IdleTime: %d\n\r",IdleTime); // TODO delete
+//	printf("IdleTime: %d\n\r",IdleTime);
   /* USER CODE END IDLETimeTimerCallback */
 }
 
@@ -1014,21 +1042,44 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 			osMessageQueuePut(QueueSyringeSetPointCommunicationHandle, &syringe_set_point_change, 0, 0U);
 		}else if (Buffor_Rx_USART[0] == 'T') { // Test connection
 			printf("T");
-		}else if (Buffor_Rx_USART[0] == 'O') { // Start
+		}else if (Buffor_Rx_USART[0] == 'O') { // Start ALL
 			uint8_t permission = 1;
 			osMessageQueuePut(QueueNeedlePermissionHandle, &permission, 0, 0U);
 			osMessageQueuePut(QueueSyringePermissionHandle, &permission, 0, 0U);
 			osMessageQueuePut(QueueCommunicationPermissionHandle, &permission, 0, 0U);
-		}else if (Buffor_Rx_USART[0] == 'E') { // STOP
+		}else if (Buffor_Rx_USART[0] == 'E') { // STOP ALL
 			uint8_t permission = 0;
 			osMessageQueuePut(QueueNeedlePermissionHandle, &permission, 0, 0U);
 			osMessageQueuePut(QueueSyringePermissionHandle, &permission, 0, 0U);
 			osMessageQueuePut(QueueCommunicationPermissionHandle, &permission, 0, 0U);
-		}else if (Buffor_Rx_USART[0] == 'R') {
+		}else if (Buffor_Rx_USART[0] == 'R') { // STOP communication
 			uint8_t permission = 0;
 			osMessageQueuePut(QueueCommunicationPermissionHandle, &permission, 0, 0U);
+		}else if (Buffor_Rx_USART[0] == 'M') { // STOP motors
+			uint8_t permission = 0;
+			osMessageQueuePut(QueueNeedlePermissionHandle, &permission, 0, 0U);
+			osMessageQueuePut(QueueSyringePermissionHandle, &permission, 0, 0U);
+		}else if (Buffor_Rx_USART[0] == 'Q') { // Needle speed in rpm
+			uint16_t Needle_speed_changed;
+			char Needle_speed_changed_str[3];
+			// Convert to uint16_t
+			Needle_speed_changed_str[0] = Buffor_Rx_USART[1];
+			Needle_speed_changed_str[1] = Buffor_Rx_USART[2];
+			Needle_speed_changed_str[2] = Buffor_Rx_USART[3];
+			Needle_speed_changed =  (uint16_t)atoi(Needle_speed_changed_str);
+			// Send to queue
+			osMessageQueuePut(QueueNeedleSpeedRPMHandle, &Needle_speed_changed, 0, 0U);
+		}else if (Buffor_Rx_USART[0] == 'W') { // Syringe speed in rpm
+			uint16_t Syringe_speed_changed;
+			char Syringe_speed_changed_str[3];
+			// Convert to uint16_t
+			Syringe_speed_changed_str[0] = Buffor_Rx_USART[1];
+			Syringe_speed_changed_str[1] = Buffor_Rx_USART[2];
+			Syringe_speed_changed_str[2] = Buffor_Rx_USART[3];
+			Syringe_speed_changed =  (uint16_t)atoi(Syringe_speed_changed_str);
+			// Send to queue
+			osMessageQueuePut(QueueSyringeSpeedRPMHandle, &Syringe_speed_changed, 0, 0U);
 		}
-
 		//
 		// Listening setup
 		//

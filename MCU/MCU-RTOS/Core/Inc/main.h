@@ -115,6 +115,8 @@ void Error_Handler(void);
 #define TCK_GPIO_Port GPIOA
 #define STEP_SYRINGE_Pin GPIO_PIN_15
 #define STEP_SYRINGE_GPIO_Port GPIOA
+#define FAN_OUT_Pin GPIO_PIN_6
+#define FAN_OUT_GPIO_Port GPIOB
 #define LD2_Pin GPIO_PIN_7
 #define LD2_GPIO_Port GPIOB
 #define DIR_SYRINGE_Pin GPIO_PIN_8
