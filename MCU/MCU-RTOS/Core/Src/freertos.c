@@ -204,6 +204,11 @@ osMessageQueueId_t QueueNeedleSpeedRPMHandle;
 const osMessageQueueAttr_t QueueNeedleSpeedRPM_attributes = {
   .name = "QueueNeedleSpeedRPM"
 };
+/* Definitions for QueueMotorStatus */
+osMessageQueueId_t QueueMotorStatusHandle;
+const osMessageQueueAttr_t QueueMotorStatus_attributes = {
+  .name = "QueueMotorStatus"
+};
 /* Definitions for SyringeInfoTimerOLED */
 osTimerId_t SyringeInfoTimerOLEDHandle;
 const osTimerAttr_t SyringeInfoTimerOLED_attributes = {
@@ -426,6 +431,9 @@ void MX_FREERTOS_Init(void) {
   /* creation of QueueNeedleSpeedRPM */
   QueueNeedleSpeedRPMHandle = osMessageQueueNew (2, sizeof(uint16_t), &QueueNeedleSpeedRPM_attributes);
 
+  /* creation of QueueMotorStatus */
+  QueueMotorStatusHandle = osMessageQueueNew (2, sizeof(uint8_t), &QueueMotorStatus_attributes);
+
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
@@ -532,6 +540,7 @@ void StartSyringeControlTask(void *argument)
 	// Initialization
 	//
 	Init_A4988(&Syringe); // Drive initialization
+	Set_Speed(&Syringe, 100); // Base speed TODO check
 	HAL_TIM_Base_Stop_IT(Syringe.TIM_COUNTER_SLAVE);
 
 	osMutexAcquire(MutexI2C4Handle, osWaitForever);
@@ -676,7 +685,7 @@ void StartOLEDTask(void *argument)
 	  //
 	  // Time interval
 	  //
-	  osDelay((500 * osKernelGetTickFreq()) / 1000);
+	  osDelay((450 * osKernelGetTickFreq()) / 1000);
   }
   /* USER CODE END StartOLEDTask */
 }
@@ -735,6 +744,7 @@ void StartNeedleControlTask(void *argument)
 	// Initialization
 	//
 	Init_A4988(&Needle); // Drive initialization
+	Set_Speed(&Needle, 100);
 	HAL_TIM_Base_Stop_IT(Needle.TIM_COUNTER_SLAVE);
 
 	osMutexAcquire(MutexI2C2Handle, osWaitForever);
@@ -827,6 +837,7 @@ void StartCommunicationTask(void *argument)
 	Needle_info _Needle_info;
 	Temperature_info _Temperature_info;
 	uint8_t _Permission;
+	uint8_t _Motor_status;
 	_Needle_info.Set_distance_needle = 0;
 	_Needle_info.MEASURE_Needle = 0;
 	_Syringe_info.Set_distance_syringe = 0;
@@ -834,6 +845,7 @@ void StartCommunicationTask(void *argument)
 	_Temperature_info.Fan_info = 0;
 	_Temperature_info.Temperature = 0;
 	_Permission = 0;
+	_Motor_status = 0;
 
   /* Infinite loop */
   for(;;)
@@ -849,14 +861,22 @@ void StartCommunicationTask(void *argument)
 	  osMessageQueueGet(QueueTemperatureCommunicationHandle, &_Temperature_info, NULL, 0);
 	  // Get permission
 	  osMessageQueueGet(QueueCommunicationPermissionHandle, &_Permission, NULL, 0);
+	  // Get status on Motors
+	  osMessageQueueGet(QueueMotorStatusHandle, &_Motor_status, NULL, 0);
 
 	  //
 	  // Send message
 	  //
 	  if(_Permission == 1){
-		  printf("{\"NP\":%d,\"SP\":%d,\"NS\":%d,\"SS\":%d,\"TM\":%.1f,\"FN\":%d,\"ST\":%d}\r\n",_Needle_info.MEASURE_Needle,
-				  _Syringe_info.MEASURE_Syringe,_Needle_info.Set_distance_needle,_Syringe_info.Set_distance_syringe,_Temperature_info.Temperature,
-				  _Temperature_info.Fan_info,0);
+		  if(_Motor_status == 0){
+			  printf("{\"NP\":%d,\"SP\":%d,\"NS\":%d,\"SS\":%d,\"TM\":%.1f,\"FN\":%d,\"ST\":%d}\r\n",_Needle_info.MEASURE_Needle,
+					  _Syringe_info.MEASURE_Syringe,_Needle_info.Set_distance_needle,_Syringe_info.Set_distance_syringe,_Temperature_info.Temperature,
+					  _Temperature_info.Fan_info,1);
+		  }else{
+			  printf("{\"NP\":%d,\"SP\":%d,\"NS\":%d,\"SS\":%d,\"TM\":%.1f,\"FN\":%d,\"ST\":%d}\r\n",_Needle_info.MEASURE_Needle,
+			  					  _Syringe_info.MEASURE_Syringe,_Needle_info.Set_distance_needle,_Syringe_info.Set_distance_syringe,_Temperature_info.Temperature,
+			  					  _Temperature_info.Fan_info,0);
+		  }
 	  }
 
 	  //
@@ -1047,11 +1067,13 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 			osMessageQueuePut(QueueNeedlePermissionHandle, &permission, 0, 0U);
 			osMessageQueuePut(QueueSyringePermissionHandle, &permission, 0, 0U);
 			osMessageQueuePut(QueueCommunicationPermissionHandle, &permission, 0, 0U);
+			osMessageQueuePut(QueueMotorStatusHandle,&permission, 0, 0U);
 		}else if (Buffor_Rx_USART[0] == 'E') { // STOP ALL
 			uint8_t permission = 0;
 			osMessageQueuePut(QueueNeedlePermissionHandle, &permission, 0, 0U);
 			osMessageQueuePut(QueueSyringePermissionHandle, &permission, 0, 0U);
 			osMessageQueuePut(QueueCommunicationPermissionHandle, &permission, 0, 0U);
+			osMessageQueuePut(QueueMotorStatusHandle,&permission, 0, 0U);
 		}else if (Buffor_Rx_USART[0] == 'R') { // STOP communication
 			uint8_t permission = 0;
 			osMessageQueuePut(QueueCommunicationPermissionHandle, &permission, 0, 0U);
@@ -1059,6 +1081,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 			uint8_t permission = 0;
 			osMessageQueuePut(QueueNeedlePermissionHandle, &permission, 0, 0U);
 			osMessageQueuePut(QueueSyringePermissionHandle, &permission, 0, 0U);
+			osMessageQueuePut(QueueMotorStatusHandle,&permission, 0, 0U);
 		}else if (Buffor_Rx_USART[0] == 'Q') { // Needle speed in rpm
 			uint16_t Needle_speed_changed;
 			char Needle_speed_changed_str[3];
