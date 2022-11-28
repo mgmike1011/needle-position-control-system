@@ -1,3 +1,2 @@
-Plik "Zlozenie.iam" obrazuje calkowite zlozenie uchwytu. 
-Widok "Caly chwytak" jest widokiem zlożenia z nieruchomą kopułą z zamieszczonym wyświetlaczem, nieruchomą częścią podtrzymującą pokrywę oraz ruchomą pokrywą. 
-Widok "Bez pokryw" jest widokiem na podstawę uchwytu z komponentami, bez pokryw i kopuł zasłaniających widok z góry
+Plik "AAZLOZENIE.iam" obrazuje calkowite zlozenie uchwytu. 
+
