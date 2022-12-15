@@ -596,10 +596,40 @@ void StartSyringeControlTask(void *argument)
 	  //
 	  // Control algorithm
 	  //
-	  if(_Permission == 1){
+	  if(_Permission == 1){ //TODO change to 1
 	  	  // TODO implement
-
+//		  ////////////////////////////////////////////////////////////////////////////
+		  // Algorytm oparty o uśrednienie tablicy
+		  uint16_t tab[2];
+		  tab[0] = readRangeSingleMillimeters_VL6180X(&Syringe_sensor);
+		  tab[1] = readRangeSingleMillimeters_VL6180X(&Syringe_sensor);
+		  uint16_t mes = (tab[0]+tab[1])/2;
+		  if(mes == _Syringe_info.Set_distance_syringe || ((mes > _Syringe_info.Set_distance_syringe*0.99) &&
+				  (mes > _Syringe_info.Set_distance_syringe*1.01))){
+			  HAL_TIM_PWM_Stop(Syringe.TIM_STEP, Syringe.TIM_STEP_CHANNEL);
+		  }
+		  else if(mes > _Syringe_info.Set_distance_syringe){ //strzykawka jedzie do przodu
+			  Set_Direction_A4988(&Syringe, LEFT_DIR); //TODO chceck
+			  HAL_TIM_PWM_Start(Syringe.TIM_STEP, Syringe.TIM_STEP_CHANNEL);
+		  }else if(mes < _Syringe_info.Set_distance_syringe){
+			  Set_Direction_A4988(&Syringe, RIGHT_DIR); //TODO chceck
+			  HAL_TIM_PWM_Start(Syringe.TIM_STEP, Syringe.TIM_STEP_CHANNEL);
+		  }
+//	  /////////////////////////////////////////////////////////////////////////////////
+		  // Algorytm oparty o pomiar początkowy
+		  if(_Syringe_info.MEASURE_Syringe == _Syringe_info.Set_distance_syringe || ((_Syringe_info.MEASURE_Syringe > _Syringe_info.Set_distance_syringe*0.99) &&
+				  	  (_Syringe_info.MEASURE_Syringe > _Syringe_info.Set_distance_syringe*1.01))){
+			  HAL_TIM_PWM_Stop(Syringe.TIM_STEP, Syringe.TIM_STEP_CHANNEL);
+		  }
+		  else if(_Syringe_info.MEASURE_Syringe > _Syringe_info.Set_distance_syringe){ //strzykawka jedzie do przodu
+			  Set_Direction_A4988(&Syringe, LEFT_DIR); //TODO chceck
+			  HAL_TIM_PWM_Start(Syringe.TIM_STEP, Syringe.TIM_STEP_CHANNEL);
+		  }else if(_Syringe_info.MEASURE_Syringe < _Syringe_info.Set_distance_syringe){
+			  Set_Direction_A4988(&Syringe, RIGHT_DIR); //TODO chceck
+			  HAL_TIM_PWM_Start(Syringe.TIM_STEP, Syringe.TIM_STEP_CHANNEL);
+		  }
 	  }
+
 	  //
 	  // Time interval
 	  //
