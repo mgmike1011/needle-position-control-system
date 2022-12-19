@@ -171,7 +171,7 @@ void Set_Speed(A4988_Drive* drive, int rpm){
 	//	@return: none
 	//
 	if(rpm > 0){
-		uint16_t arr_val = TIM_CLK/(((drive->TIM_STEP->Instance->PSC+1)*rpm*drive->RESOLUTION/60))-1;
+		uint16_t arr_val = TIM_CLK/(((drive->TIM_STEP->Instance->PSC+1)*rpm*drive->RESOLUTION*drive->STEPS)/60)-1;
 		uint16_t pulse_val = arr_val / 2;
 		__HAL_TIM_SET_AUTORELOAD(drive->TIM_STEP, arr_val);
 		__HAL_TIM_SET_COMPARE(drive->TIM_STEP, drive->TIM_STEP_CHANNEL, pulse_val);
